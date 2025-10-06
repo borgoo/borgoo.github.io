@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alessandro Borgonovo</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/icons/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="position: absolute; width: 0; height: 0;">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+                <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+            </filter>
+        </defs>
+    </svg>
+</head>
+<body>
+ 
+    <header class="header">
+        <nav class="header__nav">
+            <div class="header__container">
+                
+                <div class="header__logo-container">
+                    <img src="assets/images/icons/logo.png" alt="Alessandro Borgonovo" class="header__logo-icon">
+                    <a href="#home" class="header__logo">alessandro borgonovo</a>
+                </div>
+                
+                <ul class="header__menu">
+                    <li class="header__item">
+                        <a href="#home" class="header__link">Home</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="#quick-facts" class="header__link">About</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="#experience" class="header__link">Experience</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="#projects" class="header__link">Projects</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="#skills" class="header__link">Skills</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="#footer" class="header__link">Contact</a>
+                    </li>
+                </ul>
+                
+               
+                <div class="header__toggle">
+                    <span class="header__bar"></span>
+                    <span class="header__bar"></span>
+                    <span class="header__bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+  
+    <main class="main">
+
+        <section id="home" class="hero">
+
+            <div class="hero__window">
+                <img src="assets/images/parallax/big-planet.png" alt="Big Planet" class="hero__parallax hero__parallax--big-planet">
+                <img src="assets/images/parallax/planets.png" alt="Planets" class="hero__parallax hero__parallax--planets">
+                <img src="assets/images/parallax/saturn.png" alt="Saturn" class="hero__parallax hero__parallax--saturn">
+                <img src="assets/images/parallax/rocket.png" alt="Rocket" class="hero__parallax hero__parallax--rocket">
+                <img src="assets/images/parallax/comet.png" alt="Comet" class="hero__parallax hero__parallax--comet">
+                <div class="hero__content">
+                    <h2 class="hero__subtitle">Hi, I'm</h2>
+                    <svg class="hero__title-svg" viewBox="0 0 6400 1600" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <path id="curve" d="M 640 800 Q 3200 800 5760 800">
+                                <animate attributeName="d" 
+                                         values="M 640 800 Q 3200 800 5760 800;M 640 480 Q 3200 1120 5760 480" 
+                                         dur="0.5s" 
+                                         begin="1.5s"
+                                         fill="freeze" />
+                            </path>
+                        </defs>
+                        <text class="hero__title-curved" font-size="400" fill="white" font-weight="700">
+                            <textPath href="#curve" startOffset="50%" text-anchor="middle">
+                                alessandro borgonovo
+                            </textPath>
+                        </text>
+                    </svg>
+                    <div class="hero__summary">
+                        <p>Software Engineer with over 6+ years of experience in web application development. Worked on a tax collection portal, maintenance of a finance management web application, and web configurators for medium to large companies in the Lecco area. In recent years, developed a growing passion for fintech, with a strong focus on backend development.</p>
+                    </div>
+
+                    <div class="hero__footer">
+                        <div class="hero__motto hero__motto--spacer">
+                            <div class="hero__motto-jp">
+                                <span class="hero__motto-text">健全なる魂は</span>
+                                <span class="hero__motto-text">健全なる精神と</span>
+                                <span class="hero__motto-text">健全なる肉体に宿る</span>
+                            </div>
+        
+                            <div class="hero__motto-translation">
+                                <span class="hero__motto-line hero__motto-line--first">"A sound soul,</span>
+                                <span class="hero__motto-line hero__motto-line--second">In a sound mind,</span>
+                                <span class="hero__motto-line hero__motto-line--third">And a sound body."</span>
+                            </div>                        
+                        </div>
+                        <div class="hero__buttons hero__buttons--spacer">
+                            <a href="#projects" class="hero__button hero__button--blob hero__button--left">
+                                <span>VIEW MY WORK</span>
+                                <span class="hero__button-inner">
+                                    <span class="hero__button-blobs">
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a href="#footer" class="hero__button hero__button--blob hero__button--right hero__button--dark">
+                                <span>GET IN TOUCH</span>
+                                <span class="hero__button-inner">
+                                    <span class="hero__button-blobs">
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                        <span class="hero__button-blob"></span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>                   
+                </div>
+               
+            </div>
+        </section>
+
+       
+        <section id="quick-facts" class="section">
+            <div class="container">
+                <h2 class="section-title">Quick facts</h2>
+                <div class="section-content">
+                    <div class="quick-facts__content">
+                        Italian <span>Computer Engineering </span> graduate from <span>Politecnico di Milano</span>, with a technical background from an <span>Industrial Technical Institute</span>. Currently based in <span>Nibionno (LC), Italy</span>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <section id="experience" class="section">
+            <div class="container">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="section-content">
+                    <div class="experience-timeline">
+                        <div class="experience__item">
+                            <div class="experience__date">2018 - 2024</div>
+                            <div class="experience__content" data-date="2018 - 2024">
+                                <h3 class="experience__title">Full Stack Developer</h3>
+                                <h4 class="experience__company">
+                                    <a href="https://ideatechsrl.com/" target="_blank">Ideatech srl</a>
+                                </h4>
+                                <p class="experience__description">
+                                    Designed and maintained information systems, developing software and web applications, 
+                                    REST APIs, console processes, and managing databases. Led projects serving hundreds 
+                                    of thousands of users in finance and pharmaceutical sectors.
+                                </p>
+                                <ul class="experience__highlights">
+                                    <li>Developed massive PDF generation platforms handling peak loads</li>
+                                    <li>Built administrative portals for debt collection management</li>
+                                    <li>Created mobile applications serving 100,000+ users</li>
+                                    <li>Maintained and enhanced B2C and B2B web configurators</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="experience__item">
+                            <div class="experience__date">2013</div>
+                            <div class="experience__content" data-date="2013">
+                                <h3 class="experience__title">System Administrator Intern</h3>
+                                <h4 class="experience__company">
+                                    <a href="https://diesys.it/" target="_blank">Diesys Informatica srl</a>
+                                </h4>
+                                <p class="experience__description">
+                                    Gained foundational experience in system administration, 
+                                    setting the groundwork for my software development career.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title">Featured Projects</h2>
+                <div class="section-content">
+                    <div class="projects__grid">
+                        <div class="project__card" data-category="fintech">
+                            <div class="project__icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <h3 class="project__title">Engprint Web</h3>
+                            <p class="project__description">
+                                Platform for massive PDF generation in the finance domain, 
+                                handling hundreds of thousands of PDFs during peak periods.
+                            </p>
+                            <div class="project__tags">
+                                <span class="project__tag">Finance</span>
+                                <span class="project__tag">PDF Generation</span>
+                                <span class="project__tag">High Volume</span>
+                            </div>
+                        </div>
+
+                        <div class="project__card" data-category="fintech">
+                            <div class="project__icon">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <h3 class="project__title">GE.RI</h3>
+                            <p class="project__description">
+                                Administrative portal for debt collection management 
+                                serving hundreds of thousands of users with robust security.
+                            </p>
+                            <div class="project__tags">
+                                <span class="project__tag">Debt Collection</span>
+                                <span class="project__tag">Admin Portal</span>
+                                <span class="project__tag">Enterprise</span>
+                            </div>
+                        </div>
+
+                        <div class="project__card" data-category="mobile">
+                            <div class="project__icon">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <h3 class="project__title">TeraPiù</h3>
+                            <p class="project__description">
+                                Mobile application in the pharmaceutical sector 
+                                serving over 100,000 users with seamless functionality.
+                            </p>
+                            <div class="project__tags">
+                                <span class="project__tag">Mobile App</span>
+                                <span class="project__tag">Pharmaceutical</span>
+                                <span class="project__tag">100K+ Users</span>
+                            </div>
+                        </div>
+
+                        <div class="project__card" data-category="web">
+                            <div class="project__icon">
+                                <i class="fas fa-sliders-h"></i>
+                            </div>
+                            <h3 class="project__title">Web Configurators</h3>
+                            <p class="project__description">
+                                Maintenance and enhancement of B2C and B2B web configurators 
+                                for customizable product solutions.
+                            </p>
+                            <div class="project__tags">
+                                <span class="project__tag">B2B/B2C</span>
+                                <span class="project__tag">Configurators</span>
+                                <span class="project__tag">E-commerce</span>
+                            </div>
+                        </div>
+
+                        <div class="project__card" data-category="education">
+                            <div class="project__icon">
+                                <i class="fas fa-language"></i>
+                            </div>
+                            <h3 class="project__title">The Language Grid</h3>
+                            <p class="project__description">
+                                Full management of a Business English e-learning platform 
+                                connecting thousands of students and teachers worldwide.
+                            </p>
+                            <div class="project__tags">
+                                <span class="project__tag">E-learning</span>
+                                <span class="project__tag">Education</span>
+                                <span class="project__tag">Multi-user</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+       
+        <section id="skills" class="section">
+            <div class="container">
+                <h2 class="section-title">Skills & Technologies</h2>
+                <div class="section-content">
+                    <div class="skills__grid">
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Backend Development</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">C#</span>
+                                <span class="skill__tag">ASP.NET Framework</span>
+                                <span class="skill__tag">ASP.NET Core</span>
+                                <span class="skill__tag">.NET 10</span>
+                                <span class="skill__tag">PHP Silverstripe</span>
+                                <span class="skill__tag">PHP</span>
+                                <span class="skill__tag">Node.js</span>
+                            </div>
+                        </div>
+
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Frontend Development</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">JavaScript</span>
+                                <span class="skill__tag">TypeScript</span>
+                                <span class="skill__tag">React.js</span>
+                                <span class="skill__tag">AngularJS</span>
+                                <span class="skill__tag">Angular2</span>
+                                <span class="skill__tag">HTML</span>
+                                <span class="skill__tag">Bootstrap</span>
+                            </div>
+                        </div>
+
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Databases</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">FireBird</span>
+                                <span class="skill__tag">PostgreSQL</span>
+                                <span class="skill__tag">MySQL</span>
+                                <span class="skill__tag">MariaDB</span>
+                            </div>
+                        </div>
+
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Database Tools</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">IBExpert</span>
+                                <span class="skill__tag">FlameRobin</span>
+                                <span class="skill__tag">DBeaver</span>
+                                <span class="skill__tag">pgAdmin</span>
+                                <span class="skill__tag">phpMyAdmin</span>
+                            </div>
+                        </div>
+
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Development Tools</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">GIT</span>
+                                <span class="skill__tag">SVN</span>
+                                <span class="skill__tag">GitBash</span>
+                                <span class="skill__tag">TortoiseSVN</span>
+                            </div>
+                        </div>
+
+                        <div class="skill__category">
+                            <h3 class="skill__category-title">Methodologies</h3>
+                            <div class="skill__tags">
+                                <span class="skill__tag">Agile</span>
+                                <span class="skill__tag">Scrum</span>
+                                <span class="skill__tag">Ticketing system</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <section id="footer">
+            <div class="footer-window">
+                <h2 class="footer-window__title">Get In Touch</h2>
+                <img src="assets/images/parallax/comet.png" alt="Comet" class="footer__parallax footer__parallax--comet">
+                <img src="assets/images/parallax/alien.png" alt="Alien" class="footer__parallax footer__parallax--alien">
+                    
+                <div class="footer__content">
+                    <div class="contact__info">
+                        <h3 class="contact__info-title">Let's Work Together</h3>
+                        <p class="contact__info-description">
+                            I'm always interested in discussing new opportunities, 
+                            innovative projects, and collaborations in software development and fintech.
+                        </p>
+                        <div class="contact__details">
+                            <div class="contact__item">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:alessandro.borgonovo.info@gmail.com">alessandro.borgonovo.info@gmail.com</a>
+                            </div>
+                            <div class="contact__item">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:+393478688579">+39 347 868 8579</a>
+                            </div>
+                            <div class="contact__item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <a href="https://maps.google.com/?q=Nibionno+LC+Italy" target="_blank">Nibionno (LC), Italy</a>
+                            </div>
+                        </div>
+                        <div class="contact__social-links">
+                            <a href="assets/docs/Alessandro.Borgonovo.CV-eng.pdf" class="contact__social-link" target="_blank">
+                                <i class="fa fa-file-pdf"></i>
+                            </a>
+                            <a href="https://github.com/borgoo" class="contact__social-link" target="_blank">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" class="contact__social-link" target="_blank">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="contact__cta">
+                        <h4 class="contact__cta-title">Ready to Start a Project?</h4>
+                        <p class="contact__cta-description">Whether you need a robust backend system, a sleek frontend interface, 
+                        or a complete full-stack solution, I'm here to help bring your ideas to life.</p>
+                        <div class="contact__cta-buttons">
+                            <a href="mailto:alessandro.borgonovo.info@gmail.com" class="contact__cta-button">
+                                <i class="fas fa-envelope"></i>
+                                Send Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+   
+    <script src="script.js"></script>
+</body>
+</html>
