@@ -10,11 +10,14 @@ Welcome to my personal space on the web! This is where I showcase my journey as 
 
 This portfolio website represents my professional journey in software development, with a focus on fintech and full-stack solutions. Built with clean HTML, CSS, and JavaScript, it features an engaging space-themed design that reflects my passion for technology and innovation.
 
+**NEW**: Now featuring an integrated blog where I share insights, learning experiences, and technical explorations.
+
 ## What You'll Find Here
 
 - **Professional Experience**: Over 6 years of software development experience
 - **Featured Projects**: From massive PDF generation platforms to mobile apps serving 100K+ users
 - **Technical Skills**: Backend development with C# and .NET, frontend with React and Angular, plus various databases and tools
+- **Blog**: Technical writings and learning journey documentation ([Ez Blog](https://github.com/borgoo/ez-blog))
 - **Contact Information**: Ready to discuss new opportunities and collaborations
 
 ## Technologies Used
@@ -24,10 +27,52 @@ This portfolio website represents my professional journey in software developmen
 - Font Awesome icons
 - Custom SVG animations
 - Responsive design principles
+- Dark/Light theme support (blog)
+
+## Project Structure
+
+```
+borgoo.github.io/
+├── assets/          # All static assets (CSS, JS, fonts, images)
+│   ├── css/         # Stylesheets (main, blog, fonts, header-logo)
+│   ├── js/          # JavaScript files (main, blog modules)
+│   ├── images/      # Images and icons
+│   └── fonts/       # Custom font files
+├── blog/            # Ez Blog - Technical blog and writings
+│   ├── posts/       # Individual blog posts
+│   ├── data/        # Blog data (DB_posts.js)
+│   └── templates/   # Post templates
+└── index.html       # Main portfolio page
+```
+
+## Features
+
+### Portfolio Website
+- Space-themed interactive design
+- Smooth scrolling navigation
+- Responsive layout for all devices
+- Project showcase with detailed descriptions
+- Professional experience timeline
+
+### Ez Blog
+- Clean, minimalist blog design
+- Dark/Light theme switcher
+- Static site generation (GitHub Pages compatible)
+- Responsive reading experience
 
 ## Getting Started
 
-Simply open `index.html` in your browser to explore the site. The design is fully responsive and includes smooth scrolling navigation and interactive elements.
+Simply open `index.html` in your browser to explore the portfolio, or visit `/blog/` for the blog section. The entire site is fully responsive and includes smooth scrolling navigation and interactive elements.
+
+## Blog
+
+Visit the [blog section](https://borgoo.github.io/blog/) to read about:
+- Software development insights
+- Learning experiences and challenges
+- Technical explorations and experiments
+- Coding practices and problem-solving
+
+The blog is built with [Ez Blog](https://github.com/borgoo/ez-blog), a lightweight static blog system designed for simplicity and performance.
 
 ## Contact
 

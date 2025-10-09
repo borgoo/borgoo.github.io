@@ -1,0 +1,58 @@
+<h2>Why? (-have I started)</h2>
+<blockquote>Because I can.</blockquote>
+
+<p>In the last year I started coding on platforms like <a href="https://leetcode.com/" target="_blank">LeetCode</a> and testing myself with challenges like <a href="https://adventofcode.com/" target="_blank">Advent of Code</a>. The goal was to sharpen my coding and problem-solving skills.</p>
+<p>During this journey, I began reflecting on how much knowledge I was accumulating and how easily it could be forgotten in a few years.</p>
+<p>I'm the kind of person who loses skills I don't use daily, yet I've often found myself needing to re-learn things I already knew. Having a centralized place to document my learning process seemed like it could help future-me (and maybe others too).</p>
+<p>Plus, the different platforms I use for practice don't really support this concept of knowledge centralization.</p>
+<p>So... here I am.</p>
+<p>What started as a styling exercise evolved into something practical: a way to improve my English through writing while sharing my thought processes and learnings with other developers.</p>
+
+<h2>How? (-this is done)</h2>
+
+<p>I began by developing a static blog system using HTML, CSS and pure JavaScript: <a href="https://github.com/borgoo/ez-blog" target="_blank">Ez Blog</a></p>
+<p>These technologies are easy to maintain and deploy seamlessly on GitHub Pages.</p>
+<p>With that foundation set, I needed to figure out how to fake some dynamism for the content. The approach I settled on was straightforward:
+    <ul>
+        <li>Create a database of posts</li>
+        <li>Create a page for each post</li>
+        <li>Create a homepage that lists all posts</li>
+    </ul>
+</p>
+
+<h3>Create a database of posts</h3>
+<p>Since I don't expect heavy traffic or complex performance requirements, and because GitHub Pages is my target platform, a simple JSON file made perfect sense for storing post metadata.</p>
+<p>Almost immediately, I realized that a massive JSON file containing all posts' HTML content would be nightmarishly inelegant (imagine <a href="https://github.com/borgoo/ez-blog/blob/main/DB_posts.js" target="_blank">this file</a> with all that HTML wrapped in backticks ☠️).</p>
+<p>The solution was obvious: externalize the HTML content. Each post's content lives in its own file, while the JSON database only stores lightweight metadata.</p>
+<p>After implementing this separation, I wrote the logic to bind the HTML content files with the JSON metadata using a <i>contentFile</i> field. Much cleaner.</p>
+<p>For the post identifier, I chose URI-compatible titles rather than array indices. This avoids two critical problems: 
+<ol>
+    <li>Fragility—inserting posts anywhere but the end would break the indexing</li>
+    <li>Future-proofing—if I ever implement server-side sorting or pagination, old links won't break</li>
+</ol></p>
+<p>Finally, I implemented the JavaScript logic (<a href="https://github.com/borgoo/ez-blog/blob/main/post.js" target="_blank">post.js</a>) to fetch and inject the HTML content into a common post template (<a href="https://github.com/borgoo/ez-blog/blob/main/post.html" target="_blank">post.html</a>).</p>
+
+<h3>Create a page for each post</h3>
+<p>By the time I got here, I'd already solved this problem: each post is simply the combination of its metadata and HTML content, rendered through the shared template.</p>
+
+<h3>Create a homepage that lists all posts</h3>
+<p>This turned out to be the easiest part—just some JavaScript logic (<a href="https://github.com/borgoo/ez-blog/blob/main/main.js" target="_blank">main.js</a>) to load and display the post metadata from the JSON database.</p>
+
+<h2>What's next? (-this is still to do)</h2>
+<blockquote>The sky is the only limit.</blockquote>
+<p>Some ideas I'm considering:
+<ul>
+    <li>Multi-language support</li>
+    <li>Views counter</li>
+    <li>Semantic search</li>
+    <li>RSS feed</li>
+    <li>Comments section</li>
+    <li>Social sharing</li>
+    <li>Post tags and categories</li>
+    <li>Reading time estimates</li>
+</ul>
+</p>
+
+<p>Maybe one day I'll implement some of these... in the meantime, if you have ideas or suggestions, feel free to reach out at <a href="mailto:alessandro.borgonovo.info@gmail.com">alessandro.borgonovo.info@gmail.com</a>.</p>
+
+

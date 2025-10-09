@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alessandro Borgonovo</title>
+    <title>alessandro borgonovo</title>
     <link rel="icon" type="image/x-icon" href="assets/images/icons/favicon.ico">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="position: absolute; width: 0; height: 0;">
         <defs>
@@ -25,7 +25,7 @@
                 
                 <div class="header__logo-container">
                     <img src="assets/images/icons/logo.png" alt="Alessandro Borgonovo" class="header__logo-icon">
-                    <a href="#home" class="header__logo">alessandro borgonovo</a>
+                    <a href="#home" class="header__logo"><span class="first-letter">a</span>lessandro &nbsp;<span class="first-letter">b</span>orgonovo</a>
                 </div>
                 
                 <ul class="header__menu">
@@ -43,6 +43,9 @@
                     </li>
                     <li class="header__item">
                         <a href="#skills" class="header__link">Skills</a>
+                    </li>
+                    <li class="header__item">
+                        <a href="blog/index.html" class="header__link">Blog</a>
                     </li>
                     <li class="header__item">
                         <a href="#footer" class="header__link">Contact</a>
@@ -427,6 +430,19 @@
                                 </svg>
                                 <i class="fab fa-linkedin"></i>
                             </a>
+                            <a href="blog/" class="contact__social-link contact__social-link--blog" >
+                                <svg class="contact__social-curve" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <path id="blog-curve" d="M 20,60 A 40,40 0 1,1 100,60"></path>
+                                    </defs>
+                                    <text class="contact__social-curve-text" font-size="18" fill="#f72585" font-weight="600">
+                                        <textPath href="#blog-curve" startOffset="50%" text-anchor="middle">
+                                            Blog
+                                        </textPath>
+                                    </text>
+                                </svg>
+                                <i class="fa-regular fa-newspaper"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="contact__cta">
@@ -446,6 +462,6 @@
     </main>
 
    
-    <script src="script.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
