@@ -39,12 +39,6 @@ class BlogPost {
       const content = await contentResponse.text();
       this.renderPost(post, content);
       
-      document.title = `${post.title} - EZ Blog`;
-      
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', post.abstract);
-      }
     } catch (error) {
       this.renderError(error.message);
     }
@@ -57,11 +51,7 @@ class BlogPost {
     const updatedRelative = this.getRelativeTime(post.updatedDate);
     const showUpdated = post.createdDate !== post.updatedDate;
 
-    // Update page title and meta tags for SEO
     this.updateMetaTags(post);
-    
-    // Add Schema.org structured data
-    this.addStructuredData(post);
 
     this.postContainer.innerHTML = `
       <header class="post__header">
@@ -77,7 +67,7 @@ class BlogPost {
             </span>
           ` : ''}
           <span class="post__meta-item">
-            <span>${this.escapeHtml(post.author)}</span>
+            <span>${this.escapeHtml(post.authorNickname)}</span>
           </span>
         </div>
       </header>
@@ -93,7 +83,7 @@ class BlogPost {
   updateMetaTags(post) {
     const baseUrl = window.location.origin;
     const postUrl = `${baseUrl}/post.html?id=${post.id}`;
-    const fullTitle = `${post.title} - EZ Blog`;
+    const fullTitle = `${post.title} - alessandro's blog`;
 
     document.title = fullTitle;
 
@@ -114,6 +104,8 @@ class BlogPost {
     this.setMetaTag('property', 'twitter:url', postUrl);
     this.setMetaTag('property', 'twitter:title', fullTitle);
     this.setMetaTag('property', 'twitter:description', post.abstract);
+    
+    this.addStructuredData(post);
   }
 
   setMetaTag(attribute, key, content) {
@@ -136,39 +128,6 @@ class BlogPost {
     element.setAttribute('href', href);
   }
 
-  addStructuredData(post) {
-    const existingScript = document.getElementById('structured-data');
-    if (existingScript) {
-      existingScript.remove();
-    }
-
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": post.title,
-      "description": post.abstract,
-      "author": {
-        "@type": "Person",
-        "name": post.author
-      },
-      "datePublished": post.createdDate,
-      "dateModified": post.updatedDate,
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${window.location.origin}/post.html?id=${post.id}`
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "EZ Blog"
-      }
-    };
-
-    const script = document.createElement('script');
-    script.id = 'structured-data';
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(structuredData, null, 2);
-    document.head.appendChild(script);
-  }
 
   formatDate(dateString) {
     const date = new Date(dateString);
@@ -206,6 +165,53 @@ class BlogPost {
     return div.innerHTML;
   }
 
+  addStructuredData(post) {
+
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.abstract || `${post.title} - Read this article on alessandro's blog`,
+      "author": {
+        "@type": "Person",
+        "name": "Alessandro Borgonovo",
+        "jobTitle": "Software Engineer",
+        "url": "https://borgoo.github.io/",
+        "sameAs": [
+          "https://github.com/borgoo",
+          "https://linkedin.com/in/alessandro-borgonovo-9754161b6"
+        ]
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Alessandro Borgonovo"
+      },
+      "datePublished": post.createdDate,
+      "dateModified": post.updatedDate || post.createdDate,
+      "url": `https://borgoo.github.io/blog/post.html?id=${post.id}`,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://borgoo.github.io/blog/post.html?id=${post.id}`
+      },
+      "inLanguage": "en",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "alessandro's blog",
+        "url": "https://borgoo.github.io/blog/"
+      }
+    };
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }
+
   renderError(message) {
     this.postContainer.innerHTML = `
       <div class="error">
@@ -220,4 +226,3 @@ class BlogPost {
 document.addEventListener('DOMContentLoaded', () => {
   new BlogPost();
 });
-

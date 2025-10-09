@@ -80,7 +80,7 @@ class BlogHomepage {
             </span>
           ` : ''}
           <span class="post__meta-item">
-            <span>${this.escapeHtml(post.author)}</span>
+            <span>${this.escapeHtml(post.authorNickname)}</span>
           </span>
         </div>
         <h2 class="post__title">
