@@ -74,6 +74,10 @@ h3 {
   font-size: 1.5rem;
 }
 
+b {
+  color: var(--accent-secondary);
+}
+
 
 .header {
   border-bottom: 1px solid var(--border-color);
@@ -401,7 +405,7 @@ h3 {
 .footer {
   border-top: 1px solid var(--border-color);
   margin-top: 4rem;
-  padding: 2rem 0;
+  padding: 2rem;
   text-align: center;
   color: var(--text-muted);
   font-size: 0.875rem;
