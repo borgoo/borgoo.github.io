@@ -1,0 +1,212 @@
+<h2>Abstract</h2>
+<p>I'm trying to report the journey of a software engineer that, starting from an SME, is trying to grow his career to a bigger company and become a senior .NET backend developer.</p>
+<p>This will be just an aspect of what it means to do so, but I found it useful for me (as a resource that I can reference before each application) and for other programmers (hopefully) who are approaching this situation for the first time.</p>
+<p>So let's not indulge further... let's start!</p>
+
+<pre><code>SELECT
+    c.CompanyName AS Company, 
+    jo.JobOfferName AS Position, 
+    jo.GAS AS GAS,
+    q.QuestionText AS Question, 
+    a.AnswerBlob AS MyAnswer         
+FROM Companies AS c
+JOIN JobOffers AS jo ON jo.CompanyId = c.CompanyId 
+JOIN Questions AS q ON q.JobOfferId = jo.JobOfferId 
+LEFT JOIN Answers AS a ON a.QuestionId = q.QuestionId 
+ORDER BY c.CompanyId, jo.JobOfferId, q.SortOrder, a.SortOrder
+----
+Running...</code></pre>
+
+<h3>Milan Consultancy Company • Mid .NET dev • 35-40k</h3>
+<p>First step of the selection process for a Consultancy Company in Milan: Hybrid work with GAS (based on the applicant skills) in range 35-40k. The assessment consisted of a 45' theoretical interview + 30' of practical test.</p>
+<details>
+    <summary>Interfaces vs Abstract classes</summary>
+    <span>
+        <p>
+            [Q.1]:<br>
+            <i>What are the main differences between interfaces and abstract classes?
+            </i>
+        </p>
+        
+        [A.1]:<br>
+        <p>Both of them cannot be instantiated and are used to define contracts for classes. The main differences are that interfaces are meant to be used as pure abstraction to permit 
+            multiple polymorphism. In fact, a subclass can implement N interfaces, but always extend max 1 super class (abstract or not). Abstract classes are more likely to be used to 
+            share common code to be inherited by their subclasses. Personally, I would say that I prefer to use an abstract class over an interface when I have at least 1 abstract method to implement + some code to share between subclasses + I don't want the base class (abstract one) to be instantiable.</p>
+            <p><i>ps</i>: from .NET 8 even interfaces can implement methods, but just ignore this bad paradigm (just make it present to your interviewer 😉).</p>
+
+    <span>
+</details> <!-- OOP principles -->
+<details>
+    <summary>OOP principles</summary>
+    <span>
+        <p>
+            [Q.2]:<br>
+            <i>Tell me about the OOP principles you know.
+            </i>
+        </p>
+        
+        [A.2]:<br>
+        <p>I remember them through the <b>P</b>.<b>A</b>.<b>I</b>.<b>E</b>. (🤪) acronym:</p>
+        <p><b>P</b>olymorphism: a method can change based on the concrete type of the object. <br>
+            <i>eg.</i><br>
+<pre><code>internal interface class Animal {
+    public DateTime BirthDate { get; init;}
+    ...
+    public abstract void MakeSound();
+}
+List&lt;Animal&gt; zoo = [new Lion(), new Elephant(), ...]
+zoo[0].MakeSound(); // "Roar"
+zoo[1].MakeSound(); // "Trumpet"
+...</code></pre>        
+        </p>
+        <p><b>A</b>bstraction: ensures the code structure and reusability.</p>
+        <p><b>I</b>nheritance: methods and properties can be inherited from a base class by its subclasses.</p>
+        <p><b>E</b>ncapsulation: resources can be accessed/shared only when needed.</p>
+    <span>
+</details> <!-- OOP principles -->
+
+<details>
+    <summary>SOLID principles</summary>
+    <span>
+        <p>
+            [Q.3]:<br>
+            <i>Now let's get a step further: do you follow some kind of principles to write clean code in OOP?
+            </i>
+        </p>
+        
+        [A.3]:<br>
+        <p>I think that you are referring to the SOLID principles...<br>
+            *<i>Here the interviewer nodded to me and reassured me that he didn't need the exact acronym explanation; but I was ready </i>😎*<br>
+            <p><b>S</b>ingle responsibility: a class should have only one responsibility. This will avoid monolithic classes and will make the code more maintainable and testable.</p>
+            <p><b>O</b>pen/Closed principle: aim to extend the code without modifying it. This will lead to code that will not edit already tested code (heavily).<br>
+                <i>eg.</i><br>
+                I'm handling different payment methods in my application, do not write code that with various switch statements handles the different payment paths; instead 
+                provide an IPaymentMethod interface and write a specific new class implementation for each new payment method. This will lead to a more structured and testable 
+                code. (even better for the first -<b>S</b>- principle).
+            </p>
+            <p><b>L</b>iskov substitution principle: a subclass should be ALWAYS substitutable for its superclass.</p>
+            <p><b>I</b>nterface segregation principle: do not create a monolithic interface with many methods; instead create smaller interfaces for each responsibility. 
+                (Arguably a <b>S</b> principle but for interfaces...)</p>
+            <p><b>D</b>ependency inversion: whenever possible, rely on abstractions and not concrete implementations.</p>
+        </p>
+    <span>
+</details> <!-- SOLID principles -->
+
+
+
+<h3>American Company • Senior full stack dev • 75-85k</h3>
+<p>First step of the selection process for an American (full remote) software house. I didn't apply for this job in the first place, but a friend of mine did and passed me the first step question.</p>
+<details>
+    <summary>Using .NET to implement SeatingStudents(int[] arr) function</summary>
+    <span>
+        <p>
+            [Q.1]:<br>
+            <i>Have the function SeatingStudents(arr) read the array of integers stored in arr which will be in the following format: [K, r1, r2, r3, ...] 
+            where K represents the number of desks in a classroom, and the rest of the integers in the array will be in sorted order and will represent 
+            the desks that are already occupied. All of the desks will be arranged in 2 columns, where desk #1 is at the top left, desk #2 is at the top 
+            right, desk #3 is below #1, desk #4 is below #2, etc. Your program should return the number of ways 2 students can be seated next to each other.
+            </i>
+        </p>
+        
+        [A.1]:<br>
+        <p>First thing that came to my mind is a visual representation of the desks and the occupied ones:</p>
+        <pre><code>[][]    /*desks line 0*/
+[X][]   /*desks line 1*/
+[][X]   /*...*/
+...</code></pre>        
+        <p>Second thing is that, in a 2 column layout, two students can be seated next to each other only in 2 ways: A-B;B-A;</p>
+        <p>Last but not least, a "desk line" could contribute to the total result only if both desks are free.</p>
+        <p>With all of that in mind, I started implementing a first-approach solution:</p>
+<pre><code>public long SeatingStudents(int[] arr)
+{
+    int k = arr[0];
+    BitArray isBusy = new(k, false);
+    for (int i = 1; i < arr.Length; i++)
+    {
+        int index = arr[i]-1;
+        isBusy[index] = true;
+    }
+    long result = 0;
+    for (int i = 0; i < isBusy.Length; i += 2) {
+        result += !isBusy[i] && !isBusy[i + 1] ? 2 : 0;
+    }
+    return result;
+}</code></pre>
+        <p>The algorithm is quite straightforward: I'm using a BitArray as a HashSet to store the occupied desks (trying to avoid HashSet<int> overhead) and after that it's just an iteration over all the desk positions (2 by 2) to check if the two desks are free.
+        As you can see, the result leads to:
+        <ul>
+            <li>O(n) time complexity -> not that bad!</li>
+            <li>BUT an awful O(k) space complexity due to the BitArray usage. Since no k constraints are provided, this solution is not acceptable (what if K~int.MaxValue ?).</li>
+        </ul>
+        <p>Reading the question requirements again, I realized that I already have the information about the busy desks in the input array and that array is even already sorted!</p>
+        <p>So I came up with a new approach: use a pointer to iterate over the "desk lines" and another pointer to consider the helpful "busy desk" information (stored in input array).</p>
+        <p>Knowing that, the tricky part became the correct update of the second pointer. With some adjustments I came up with this solution:</p>
+<pre><code>public long SeatingStudents(int[] arr)
+{
+    if (arr.Length < 1) throw new ArgumentException("Invalid input.");
+
+    int k = arr[0];
+    if (k % 2 != 0) throw new ArgumentException("Invalid input.");
+
+    int currLineOfDesks = 0;
+    int currBusyDeskIndex = 1;
+    long result = 0;
+    int numOfDesksLines = k / 2;
+    while (currLineOfDesks < numOfDesksLines) {
+
+        bool thereAreSomeBusyDesksDataRemaining = currBusyDeskIndex < arr.Length;
+        if (!thereAreSomeBusyDesksDataRemaining) {
+            int remainigLineOfDesks = numOfDesksLines - currLineOfDesks;
+            result += 2*remainigLineOfDesks;
+            break;
+        }
+        int currBusyDeskValue = arr[currBusyDeskIndex] -1;
+        bool isLeftColumn = currBusyDeskValue % 2 == 0;
+        int currBusyDeskLine =  isLeftColumn ? currBusyDeskValue / 2 : (currBusyDeskValue - 1 )/ 2;
+
+        bool currLineIsBusy = currBusyDeskLine == currLineOfDesks;
+        if (currLineIsBusy) {
+            
+            currBusyDeskIndex++;
+            if (isLeftColumn && currBusyDeskIndex < arr.Length) {
+
+                int newBusyDeskValue = arr[currBusyDeskIndex] - 1;
+                bool isANewLeftColumn = newBusyDeskValue % 2 == 0;
+                if (isANewLeftColumn)
+                {
+                    currLineOfDesks++;
+                    continue;
+                }
+
+                int newBusyLine = (newBusyDeskValue - 1) / 2;
+                bool stillReferToCurrentLine = newBusyLine == currLineOfDesks;
+                if (!stillReferToCurrentLine) {
+                    currLineOfDesks++;
+                    continue;
+                }   
+                currBusyDeskIndex++;
+            }
+
+            currLineOfDesks++;
+            continue;
+        }
+        result += 2;
+        currLineOfDesks++;
+    }
+
+    return result;
+}</code></pre>
+<p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/AmericanCompany/AmericanCompanyInterview.cs">Full code here.</a></p>
+<p>Now I'm satisfied: I've obtained: 
+    <ul>
+        <li>O(n) time complexity -> still not that bad!</li>
+        <li>O(1) space complexity -> perfect!</li>
+    </ul>
+</p>
+
+    <span>
+</details> <!-- Using .NET implement SeatingStudents(int[] arr) function-->
+
+
+
+
