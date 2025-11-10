@@ -78,6 +78,10 @@ class BlogPost {
         <a href="index.html" class="go-back"> Go back</a>
       </div>
     `;
+
+    if (window.SimpleSlider && typeof window.SimpleSlider.initAll === 'function') {
+      window.SimpleSlider.initAll(this.postContainer);
+    }
   }
 
   updateMetaTags(post) {

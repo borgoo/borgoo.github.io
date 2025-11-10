@@ -1,7 +1,8 @@
 <h2>Abstract</h2>
-<p>I'm trying to report the journey of a software engineer that, starting from an SME, is trying to grow his career to a bigger company and become a senior .NET backend developer.</p>
-<p>This will be just an aspect of what it means to do so, but I found it useful for me (as a resource that I can reference before each application) and for other programmers (hopefully) who are approaching this situation for the first time.</p>
-<p>So let's not indulge further... let's start!</p>
+<p>I'm trying to document the journey of a software engineer who, starting from an SME, is working to move into a bigger company and become a senior .NET backend developer.</p>
+<p>This covers just one aspect of what it takes to do so, but I find it useful for myself (as a resource I can review before each application) and for other programmers (hopefully) who are facing this situation for the first time.</p>
+<p>Obviously, this post is not meant to be a complete guide to the interview process; it's just a summary of the questions I've been asked and the answers I managed to recall from my sketchy memory ( or the answers I should have given).</p>
+<p>But let's not indulge further... let's start!</p>
 
 <pre><code>SELECT
     c.CompanyName AS Company, 
@@ -18,7 +19,7 @@ ORDER BY c.CompanyId, jo.JobOfferId, q.SortOrder, a.SortOrder
 Running...</code></pre>
 
 <h3>Milan Consultancy Company • Mid .NET dev • 35-40k</h3>
-<p>First step of the selection process for a Consultancy Company in Milan: Hybrid work with GAS (based on the applicant skills) in range 35-40k. The assessment consisted of a 45' theoretical interview + 30' of practical test.</p>
+<p>First step of the selection process for a consultancy company in Milan: hybrid work with GAS (based on the applicant's skills) in the 35-40k range. The assessment consisted of a 45' theoretical interview plus a 30' practical test.</p>
 <details>
     <summary>Interfaces vs Abstract classes</summary>
     <span>
@@ -29,14 +30,12 @@ Running...</code></pre>
         </p>
         
         [A.1]:<br>
-        <p>Both of them cannot be instantiated and are used to define contracts for classes. The main differences are that interfaces are meant to be used as pure abstraction to permit 
-            multiple polymorphism. In fact, a subclass can implement N interfaces, but always extend max 1 super class (abstract or not). Abstract classes are more likely to be used to 
-            share common code to be inherited by their subclasses. Personally, I would say that I prefer to use an abstract class over an interface when I have at least 1 abstract method to implement + some code to share between subclasses + I don't want the base class (abstract one) to be instantiable.</p>
-            <p><i>ps</i>: from .NET 8 even interfaces can implement methods, but just ignore this bad paradigm (just make it present to your interviewer 😉).</p>
+        <p>Neither of them can be instantiated, and both are used to define contracts for classes. The key difference is that interfaces act as pure abstractions that enable multiple polymorphism. In fact, a subclass can implement many interfaces but can extend at most one superclass (abstract or not). Abstract classes are more likely to be used to share common code across their subclasses. Personally, I reach for an abstract class over an interface when I have at least one abstract method to implement, some shared code to provide, and I don't want the base class to be instantiable.</p>
+            <p><i>PS</i>: starting with .NET 8 even interfaces can implement methods, but I'd ignore that anti-pattern (just mention it to your interviewer 😉).</p>
 
     <span>
-</details> <!-- OOP principles -->
-<details>
+</details>  <!-- Interfaces vs Abstract classes -->
+<details> 
     <summary>OOP principles</summary>
     <span>
         <p>
@@ -49,7 +48,7 @@ Running...</code></pre>
         <p>I remember them through the <b>P</b>.<b>A</b>.<b>I</b>.<b>E</b>. (🤪) acronym:</p>
         <p><b>P</b>olymorphism: a method can change based on the concrete type of the object. <br>
             <i>eg.</i><br>
-<pre><code>internal interface class Animal {
+<pre><code>public abstract class Animal {
     public DateTime BirthDate { get; init;}
     ...
     public abstract void MakeSound();
@@ -59,9 +58,9 @@ zoo[0].MakeSound(); // "Roar"
 zoo[1].MakeSound(); // "Trumpet"
 ...</code></pre>        
         </p>
-        <p><b>A</b>bstraction: ensures the code structure and reusability.</p>
+        <p><b>A</b>bstraction: keeps the code structure clean and reusable.</p>
         <p><b>I</b>nheritance: methods and properties can be inherited from a base class by its subclasses.</p>
-        <p><b>E</b>ncapsulation: resources can be accessed/shared only when needed.</p>
+        <p><b>E</b>ncapsulation: resources are accessed or shared only when they need to be.</p>
     <span>
 </details> <!-- OOP principles -->
 
@@ -75,22 +74,272 @@ zoo[1].MakeSound(); // "Trumpet"
         </p>
         
         [A.3]:<br>
-        <p>I think that you are referring to the SOLID principles...<br>
-            *<i>Here the interviewer nodded to me and reassured me that he didn't need the exact acronym explanation; but I was ready </i>😎*<br>
-            <p><b>S</b>ingle responsibility: a class should have only one responsibility. This will avoid monolithic classes and will make the code more maintainable and testable.</p>
-            <p><b>O</b>pen/Closed principle: aim to extend the code without modifying it. This will lead to code that will not edit already tested code (heavily).<br>
-                <i>eg.</i><br>
-                I'm handling different payment methods in my application, do not write code that with various switch statements handles the different payment paths; instead 
-                provide an IPaymentMethod interface and write a specific new class implementation for each new payment method. This will lead to a more structured and testable 
-                code. (even better for the first -<b>S</b>- principle).
-            </p>
-            <p><b>L</b>iskov substitution principle: a subclass should be ALWAYS substitutable for its superclass.</p>
-            <p><b>I</b>nterface segregation principle: do not create a monolithic interface with many methods; instead create smaller interfaces for each responsibility. 
-                (Arguably a <b>S</b> principle but for interfaces...)</p>
-            <p><b>D</b>ependency inversion: whenever possible, rely on abstractions and not concrete implementations.</p>
+        <p>I think you're referring to the SOLID principles...<br>
+            <i>*The interviewer nodded and told me he didn't need the full acronym, but I was ready 😎*</i>
         </p>
+        <p><b>S</b>ingle responsibility: a class should have only one responsibility. That keeps classes from becoming monoliths and makes the code easier to maintain and test.</p>
+        <p><b>O</b>pen/Closed principle: aim to extend the code without modifying existing, well-tested logic.<br>
+                <i>eg.</i><br>
+                If I'm handling different payment methods, I avoid giant switch statements. Instead, I define an <code>IPaymentMethod</code> interface and create a dedicated implementation for each new method. It keeps the structure clean and reinforces the first (<b>S</b>) principle.</p>
+        <p><b>L</b>iskov substitution principle: a subclass should always be substitutable for its superclass.</p>
+        <p><b>I</b>nterface segregation principle: don't create monolithic interfaces; break them into smaller ones, each with a clear responsibility. (It's basically the <b>S</b> principle applied to interfaces.)</p>
+        <p><b>D</b>ependency inversion: whenever possible, rely on abstractions rather than concrete implementations.</p>
     <span>
 </details> <!-- SOLID principles -->
+
+<details>
+    <summary>OOAD</summary>
+    <span>
+        <p>
+            [Q.4]:<br>
+            <i>Are you familiar with OOAD techniques?
+            </i>
+        </p>
+        
+        [A.4]:<br>
+        <p>
+            OOAD stands for Object-Oriented Analysis and Design. It's a technique that lets you analyze and design a system from an object-oriented perspective. OOA analysis focuses on:
+            <ul>
+                <li>Understanding the problem domain</li>
+                <li>Identifying the objects and their relationships</li>
+                <li>Creating use cases and domain models</li>
+            </ul>
+            OOD, on the other hand, focuses on:
+            <ul>
+                <li>Translating the analysis into technical specifications</li>
+                <li>Designing classes and applying design patterns</li>
+                <li>Creating UML diagrams</li>
+            </ul>
+        </p>
+    <span>
+</details> <!-- OOAD -->
+
+<details>
+    <summary>Design patterns</summary>
+    <span>
+        <p>
+            [Q.5]:<br>
+            <i>Do you know any design patterns?
+            </i>
+        </p>
+        
+        [A.5]:<br>
+        <p> 
+            Let me walk you through some of the most common design patterns (my personal big four):
+            <ol>
+                <li><b>Factory</b> pattern: provides custom creation logic for certain types of objects. In practice I've used it in two main ways:
+                    <ul>
+                        <li><b>Static</b> factory: a static class with one method that creates specific objects from a configuration input (eg. a switch expression).</li>
+                        <li>Factory <b>method</b>: each concrete factory implements a shared interface and exposes a creation method that returns the object instance.<br>
+                            <i>eg.</i><br>
+<pre><code>public interface ILoggerFactory // our factory method contract
+{
+    ILogger CreateLogger();
+}
+
+// our concrete factories
+public class FileLoggerFactory : ILoggerFactory
+{
+    public ILogger CreateLogger() => new FileLogger(); // extends ILogger
+}
+
+public class ConsoleLoggerFactory : ILoggerFactory
+{
+    public ILogger CreateLogger() => new ConsoleLogger(); // extends ILogger
+}
+
+public static void Main(){
+    ILoggerFactory loggerFactory = new FileLoggerFactory();
+    ILogger logger = loggerFactory.CreateLogger();
+    logger.Log("Debug message");
+}
+</code></pre>
+                        </li>
+                    </ul>
+
+                </li>
+
+                <li><b>Strategy</b> pattern: encapsulates a family of algorithms and lets you swap them at runtime (choose the strategy dynamically).<br>
+                    <i>eg.</i><br>
+<pre><code>public interface IDiscountStrategy
+{
+    public decimal Apply(decimal amount);
+}
+
+public class NoDiscount : IDiscountStrategy
+{
+    public decimal Apply(decimal amount) => amount;
+}
+public class SummerSaleDiscount : IDiscountStrategy
+{
+    public decimal Apply(decimal amount) => amount / 2;
+}
+
+public static void Main(){
+    ...
+    IDiscountStrategy discount = new SummerSaleDiscount();
+    Order order = new Order(discount);
+    ...
+}</code></pre>
+
+                </li>
+
+                <li><b>Singleton</b> pattern: ensures a class has only one instance and provides a global access point. I've used it for caching, logging, and configuration management.</li>
+                <li><b>Observer</b> pattern: defines a one-to-many dependency so that when one object changes state, all dependents are notified and updated automatically. I recently used it to implement a domain event system for my application.
+                    
+                </li>
+
+            </ol>
+        </p>
+        <p>After that I mentioned a few <b>architectural patterns</b> like CQRS, the Repository pattern, and Unit of Work, but I didn't go deep because I wanted to focus on design patterns.</p>
+    <span>
+</details> <!-- Design patterns -->
+
+<details>
+    <summary>IoC</summary>
+    <span>
+        <p>
+            [Q.6]:<br>
+            <i>What do you know about IoC?
+            </i>
+        </p>
+        
+        [A.6]:<br>
+        <p>IoC stands for Inversion of Control. It's a principle where control of object creation and dependency management is inverted from your code to a framework or container.
+            In .NET, we apply this principle through the Dependency Injection pattern. Instead of classes creating their own dependencies with 'new', dependencies are injected (usually via constructor), and the IoC container manages their creation and lifetime.     
+            This provides loose coupling, better testability, and cleaner code - especially in layered architectures where you can organize DI registration per layer using extension methods on IServiceCollection.
+        </p>
+    <span>
+</details> <!-- IoC -->
+
+<details>
+    <summary>Method vs Function</summary>
+    <span>
+        <p>
+            [Q.7]:<br>
+            <i>What's the difference between a method and a function?
+            </i>
+        </p>
+        
+        [A.7]:<br>
+        <p>A function is a standalone piece of code that does not reflect the state of the object it belongs to. A method is a function that is associated with an object and can access (read/write) its state.
+        </p>
+    <span>
+</details> <!-- Method vs Function -->
+
+<details>
+    <summary>Extension methods</summary>
+    <span>
+        <p>
+            [Q.8]:<br>
+            <i>What is an extension method?
+            </i>
+        </p>
+        
+        [A.8]:<br>
+        <p>
+            An extension method lets you add functionality to a class without modifying its source code (literally "extending" it). It must live in a static class and be declared as a static method.
+            The first parameter of the method must be <b>this</b> followed by the type you want to extend, then any additional parameters.<br>
+            I use them a lot to manipulate <code>IServiceCollection</code> in clean architecture projects by defining each layer's dependency injections directly in that layer.
+            They're also handy when you want to extend base types (string, int, ...) or third-party libraries (HttpClient, etc.).
+            Fun fact: methods like <code>.Select()</code>, <code>.Where()</code>, and <code>.OrderBy()</code> in LINQ are all extension methods.
+        </p>
+    <span>
+</details> <!-- What's an extension method -->
+
+<details>
+    <summary>ORM</summary>
+    <span>
+        <p>
+            [Q.9]:<br>
+            <i>Let's switch briefly to the database side: what is an ORM? Do you know any?
+            </i>
+        </p>        
+        [A.9]:<br>
+        <p>
+            ORM stands for Object-Relational Mapping. It's a technique that lets you map objects to database tables and vice versa. I've used Entity Framework (code-first) in several projects to interact with the database.
+            Other popular ORMs I know are Dapper and NHibernate.
+            In my previous job we weren't used to working with an ORM; we interacted with the database through raw SQL queries and stored procedures.
+        </p>
+    <span>
+</details> <!-- ORM -->
+
+<details>
+    <summary>SP vs Function</summary>
+    <span>
+        <p>
+            [Q.10]:<br>
+            <i>What's the difference between a Stored Procedure and a Function?
+            </i>
+        </p>        
+        [A.10]:<br>
+        <p>
+            Typically a stored procedure is used to perform a specific action on the database (insert/update/delete/etc.). It guarantees transaction control and can return multiple
+            result sets.
+            A function, on the other hand, is used to calculate something and return it as a single value.
+        </p>
+    <span>  
+</details> <!-- SP vs Function -->
+
+<details>
+    <summary>GIT Flow</summary>
+    <span>
+        <p>
+            [Q.11]:<br>
+            <i>Are you familiar with GIT Flow model?
+            </i>
+        </p>        
+        [A.11]:<br>
+        <p>
+            Yes, although in my previous job we followed a basic trunk-based development model.
+            In a Git Flow model there are two main branches: <code>main</code> and <code>develop</code>.
+            <ul>
+                <li><code>main</code>: contains production-ready code tagged with a version number</li>
+                <li><code>develop</code>: contains the latest code under active development</li>
+            </ul>
+            Supporting the process, there are three other branch types:
+            <ul>
+                <li><code>feature/{name}</code>: from develop to develop — used to implement new features</li>
+                <li><code>hotfix/{name}</code>: from main to main + develop — used to fix critical bugs in production</li>
+                <li><code>release/{number}</code>: from develop to main + develop — used to prepare a new release</li>
+            </ul>
+ 
+            <p>Personally, I don't love this pattern; I prefer a lighter trunk-based approach, but with each commit following the <i>Conventional Commits</i> pattern.
+            </p>
+        </p>
+    <span>
+</details> <!-- GIT Flow -->
+
+<details>
+    <summary>TDD</summary>
+    <span>
+        <p>
+            [Q.12]:<br>
+            <i>Do you know TDD?
+            </i>
+        </p>        
+        [A.12]:<br>
+        <p>
+            TDD stands for Test-Driven Development. It's a development process where you start by writing tests and, through continuous refactoring, shape the code until it delivers the desired functionality.
+        </p>
+    <span>
+</details> <!-- TDD -->
+
+<br><p>After the last question, the interviewer asked me to solve a simple TDD challenge:</p>
+<details>
+    <summary>TDD Manifesto - Kata 2 </summary>
+    <span>
+        <p>
+            [Q.13]:<br>
+            <i>Let's do a simple TDD challenge: solve the Kata 2 - String calculator from this website: <a href="https://tddmanifesto.com/exercises/" target="_blank">TDD Manifesto - exercises</a>
+            </i>
+        </p>        
+        [A.13]:<br>
+        <p><a href="https://github.com/borgoo/tdd-manifesto/blob/main/TDDManifesto.Core/Katas/Kata2/Kata2.cs" target="_blank">Full code here.</a></p>
+    <span>
+</details> <!-- TDD -->
+
+
 
 
 
@@ -140,7 +389,7 @@ zoo[1].MakeSound(); // "Trumpet"
         </ul>
         <p>Reading the question requirements again, I realized that I already have the information about the busy desks in the input array and that array is even already sorted!</p>
         <p>So I came up with a new approach: use a pointer to iterate over the "desk lines" and another pointer to consider the helpful "busy desk" information (stored in input array).</p>
-        <p>Knowing that, the tricky part became the correct update of the second pointer. With some adjustments I came up with this solution:</p>
+        <p>Knowing that, the tricky part became the correct update of the second pointer (<i>currBusyDeskIndex</i>). With some adjustments I came up with this solution:</p>
 <pre><code>public long SeatingStudents(int[] arr)
 {
     if (arr.Length < 1) throw new ArgumentException("Invalid input.");
@@ -196,8 +445,31 @@ zoo[1].MakeSound(); // "Trumpet"
 
     return result;
 }</code></pre>
-<p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/AmericanCompany/AmericanCompanyInterview.cs">Full code here.</a></p>
-<p>Now I'm satisfied: I've obtained: 
+<p>
+    <div class="simple-slider" data-simple-slider>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-1.webp" alt="step 1">
+        </div>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-2.webp" alt="step 2">
+        </div>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-3.webp" alt="step 3">
+        </div>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-4.webp" alt="step 4">
+        </div>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-5.webp" alt="step 5">
+        </div>
+        <div class="simple-slider__slide" data-simple-slider-slide>
+            <img src="assets/interviews-qa/seatingstudents-step-6.webp" alt="step 6">
+        </div>
+    </div>
+
+</p>
+<p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/AmericanCompany/AmericanCompanyInterview.cs" target="_blank">Full code here.</a></p>
+<p>Now I'm satisfied. I've obtained: 
     <ul>
         <li>O(n) time complexity -> still not that bad!</li>
         <li>O(1) space complexity -> perfect!</li>
@@ -210,3 +482,189 @@ zoo[1].MakeSound(); // "Trumpet"
 
 
 
+<h3>Milan Consultancy Company • JR-Mid .NET dev • 35k</h3>
+<p>Technical interview for a consultancy company in Milan. It took place on <a href="https://coderpad.io/" target="_blank">CoderPad</a> and featured 19 questions: 15 short theoretical checks (about a minute each) and 4 practical exercises solved with ANSI SQL and C#.</p>
+<details>
+    <summary>Bulk SQL insert from CSV file</summary>
+    <span>
+        <p>
+            [Q.1]:<br>
+            <i>You have a CSV file with a list of very large data sets to be inserted into SQL tables.
+                 You are not certain that each column has the correct (or properly formatted) data type. How would you handle this bulk insert?
+            </i>
+        </p>
+        
+        [A.1]:<br>
+        <p>
+            I'd follow the classic staging pipeline: stage first, validate second, load last.
+            <ol>
+             <li>Create a staging table with every column typed as <code>NVARCHAR</code></li>
+             <li>Load the CSV data into the staging table</li>
+             <li>Validate each column with the matching <code>TRY_CAST</code><br>
+                 <i>eg.</i><br>
+                 <code>SELECT * FROM StagingData WHERE TRY_CAST(Col2 AS INT) IS NULL AND Col2 IS NOT NULL;</code>
+             </li>
+             <li>Fix any invalid rows directly in staging</li>
+             <li>Insert the cleaned rows into the final table</li>
+            </ol> 
+
+            <p>Alternatively, you can build an ETL (.NET) pipeline:
+             <ol>
+                 <li>Read the CSV file</li>
+                 <li>Split each line with LINQ and validate/normalize the values</li>
+                 <li>Write the resulting objects to the destination table</li>
+             </ol>
+
+            </p>
+         </p>
+    <span>
+</details>  <!-- Bulk SQL insert from CSV file -->
+<details>
+    <summary>Clustered index</summary>
+    <span>
+        <p>
+            [Q.2]:<br>
+            <i>What is a clustered index?</i>
+        </p>
+        
+        [A.2]:<br>
+        <p>It's an index that defines how a table's rows are physically ordered on disk. There's only one clustered index per table, and by default the primary key becomes the clustered index.
+        </p>
+    <span>
+</details>  <!-- Clustered index -->
+<details>
+    <summary>Unsafe struct</summary>
+    <span>
+        <p>
+            [Q.3]:<br>
+            <i>Look at this code:
+<pre><code>unsafe struct MyStruct {
+    public int MyField;
+    public int* MyPtr;
+}</code></pre>
+                What can you tell me? Is this considerable unmanaged code?
+            </i>
+        </p>
+        
+        [A.3]:<br>
+        <p>The <code>unsafe</code> keyword is required because the struct contains a pointer (a C-style pointer); it allows direct memory manipulation. 
+            Unsafe structs are NOT unmanaged—they still run under the CLR (GC, JIT, exception handling...), they just bypass some type and bounds checks (eg. you can reference a corrupted address or read the wrong type).
+            Unmanaged code is code that the CLR doesn't control (eg. native C DLLs).<br>
+            Sometimes unsafe code is handy for very fast, low-level byte serialization when you need to read/write memory directly.<br>
+            <i>eg.</i><br>
+            <pre><code>unsafe {
+    MyStruct s = new MyStruct { X = 10, Y = 20 };
+    byte* ptr = (byte*)&s; // pointer to the struct in memory
+    byte[] bytes = new byte[sizeof(MyStruct)];
+    for (int i = 0; i < sizeof(MyStruct); i++) bytes[i] = ptr[i];
+}</code></pre>
+        </p>
+    <span>
+</details>  <!-- Unsafe struct -->
+
+<details>
+    <summary>Property pattern</summary>
+    <span>
+        <p>
+            [Q.4]:<br>
+            <i>What's the property pattern in .NET C#?</i>
+        </p>
+        
+        [A.4]:<br>
+        <p>The property pattern is a language feature that lets you match object properties inside a switch expression:<br>
+        <i>eg.</i><br>
+        <pre><code>...
+person switch {
+    { Name: "John" } => "The name is John",
+    {Age: &gt;= 18 and &lt; 40} => "The person is a young adult",
+    {Age: &gt;= 18} => "The person is an adult",
+    _ => "Who knows?"
+}</code></pre>
+</p>
+    <span>
+</details>  <!-- Property pattern -->
+
+<details>
+    <summary>Using .NET implement the FilterDuplicates(int[] arr) function [time limit: 10']</summary>
+    <span>
+        <p>
+            [Q.5]:<br>
+            <i>Using .NET implement the FilterDuplicates(int[] arr) function that returns a new array with duplicates removed while maintaining the original order of the elements.</i>
+        </p>
+        
+        [A.5]:<br>
+        <p>Just keep track of the elements already seen and add to the result array only the ones that aren't there yet:
+<pre><code>public int[] FilterDuplicates(int[] arr) {
+    HashSet&lt;int&gt; seen = [];
+    List&lt;int&gt; result = [];
+    foreach(int v in arr) {
+        if (!seen.Contains(v)) {
+            seen.Add(v);
+            result.Add(v);
+        }
+    }
+    return result.ToArray();
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidCompany/MilanJRMidCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>I've obtained: 
+            <ul>
+                <li>O(n) time complexity</li>
+                <li>O(n) space complexity</li>
+            </ul>
+        </p>
+    <span>
+</details>  <!-- Using .NET implement the FilterDuplicates(int[] arr) function [time limit: 10'] -->
+<details>
+    <summary>Using .NET implement the CountHappyDogs(int n, int availableSteaks) function [time limit: 20']</summary>
+    <span>
+        <p>
+            [Q.6]:<br>
+            <i>Using .NET implement the CountHappyDogs(int n, int availableSteaks) function that maximizes the number of happy dogs.<br>
+            Constraints:
+            <ul>
+                <li>A dog is happy if it has exactly 8 steaks</li>
+                <li>A dog die if it has exactly 4 steaks</li>
+                <li>Each dog MUST have at least 1 steak</li>
+                <li>Each dog can eat at most 8 steaks</li>
+                <li>You MUST give to the dogs all the possible steaks (BUT a dog cannot eat more than 8 steaks)</li>
+            </ul>
+        </i>
+        </p>
+        
+        [A.6]:<br>
+        <p>It's a classic coin-style problem: greedily assign 1 steak to each dog, then loop from the start giving each dog the extra steaks needed to hit the happy state (8 steaks).
+            Just remember to check whether the last dog ends up in the deadly state (4 steaks). If that happens, borrow one steak from the previous dog (so subtract 1 from the result).
+        
+<pre><code>public int CountHappyDogs(int n, int availableSteaks) 
+{
+    const int toBeHappy = 8;
+    const int toBePoisoned = 4;
+    const int minSteaks = 1;
+    const int toBeAdded = toBeHappy - minSteaks;
+
+    int oneSteakForEachDog = n;
+    availableSteaks -= oneSteakForEachDog;
+
+    if (availableSteaks &lt; 0) return 0;
+
+    int result = availableSteaks / toBeAdded;
+
+    if (result &gt;= n) return Math.Min(result, n);
+
+    int lastDogSteaks = 1 + (availableSteaks  % toBeAdded);
+
+    if (lastDogSteaks == toBePoisoned) return result - 1;
+
+    return result;
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidCompany/MilanJRMidCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>I've obtained: 
+            <ul>
+                <li>O(1) time complexity -> perfect!</li>
+                <li>O(1) space complexity -> perfect!</li>
+            </ul>
+        </p>
+<span>
+</details>  <!-- Using .NET implement the CountHappyDogs(int n, int availableSteaks) function [time limit: 20'] -->

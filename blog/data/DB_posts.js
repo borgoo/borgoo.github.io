@@ -18,7 +18,7 @@
     "abstract": "A compilation of all the questions (theoretical and practical) that I encountered during my job search, grouped by company and position.",    "author": "Alessandro Borgonovo",
     "authorNickname": "@boborgo",
     "createdDate": "2025-11-06",
-    "updatedDate": "2025-11-06"
+    "updatedDate": "2025-11-10"
   }
 ]
 
