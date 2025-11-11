@@ -606,6 +606,58 @@ b {
   transform: scale(1.05);
 }
 
+.simple-slider code {
+  background-color: #2a2c2e;
+}
+
+.simple-slider__legend {
+  margin: 0.75rem 0 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.simple-slider__legend-item {
+  margin-bottom: 0.5rem;
+}
+
+.simple-slider__legend-sublist {
+  margin-top: 0.35rem;
+  padding-left: 1.25rem;
+}
+
+.simple-slider__legend-subitem {
+  margin-bottom: 0.35rem;
+}
+
+.simple-slider__code {
+  font-family: var(--font-mono, "Fira Code", "Source Code Pro", Consolas, monospace);
+  font-size: 0.95em;
+}
+
+.simple-slider__code--notability-red {
+  color: #ff4d4f;
+}
+
+.simple-slider__code--notability-yellow {
+  color: #fadb14;
+}
+
+.simple-slider__code--notability-fuchsia {
+  color: #eb2f96;
+}
+
+.simple-slider__code--notability-orange {
+  color: #fa8c16;
+}
+
+.simple-slider__code--notability-rose {
+  color: #d46b90;
+}
+
+.simple-slider__code--notability-sky {
+  color: #69c0ff;
+}
+
 
 @media (max-width: 768px) {
   body {

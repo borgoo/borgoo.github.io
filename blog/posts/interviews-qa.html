@@ -455,15 +455,40 @@ public static void Main(){
         </div>
         <div class="simple-slider__slide" data-simple-slider-slide>
             <img src="assets/interviews-qa/seatingstudents-step-3.webp" alt="step 3">
+            <ul class="simple-slider__legend">
+                <li class="simple-slider__legend-item">The busy position <code class="simple-slider__code simple-slider__code--notability-red">3</code> corresponds to the <code class="simple-slider__code simple-slider__code--notability-yellow">LEFT COLUMN</code> of <code class="simple-slider__code simple-slider__code--notability-yellow">line 1</code>, so <code class="simple-slider__code simple-slider__code--notability-yellow">line 0</code> is completely free: <code class="simple-slider__code simple-slider__code--notability-yellow">result += 2 permutations</code>.</li>
+                <li class="simple-slider__legend-item">Check the next line: <code class="simple-slider__code simple-slider__code--notability-fuchsia">currLineOfDesks++</code>.</li>
+                <li class="simple-slider__legend-item">Do not increment <code class="simple-slider__code simple-slider__code--notability-orange">currBusyDeskIndex</code> because that data is needed for a later line (<code class="simple-slider__code simple-slider__code--notability-yellow">line 1</code>).</li>
+            </ul>
         </div>
         <div class="simple-slider__slide" data-simple-slider-slide>
             <img src="assets/interviews-qa/seatingstudents-step-4.webp" alt="step 4">
+            <ul class="simple-slider__legend">
+                <li class="simple-slider__legend-item">The busy position <code class="simple-slider__code simple-slider__code--notability-red">3</code> still maps to the <code class="simple-slider__code simple-slider__code--notability-yellow">LEFT COLUMN</code> of <code class="simple-slider__code simple-slider__code--notability-yellow">line 1</code>, so:
+                    <ol class="simple-slider__legend-sublist">
+                        <li class="simple-slider__legend-subitem">Skip this line when counting results because two students cannot sit together here.</li>
+                        <li class="simple-slider__legend-subitem">Increment <code class="simple-slider__code simple-slider__code--notability-orange">currBusyDeskIndex</code> because the value <code class="simple-slider__code simple-slider__code--notability-red">3</code> has now been consumed.</li>
+                        <li class="simple-slider__legend-subitem">Increment <code class="simple-slider__code simple-slider__code--notability-rose">currLineOfDesks++</code>.</li>
+                    </ol>
+                </li>
+            </ul>
         </div>
         <div class="simple-slider__slide" data-simple-slider-slide>
             <img src="assets/interviews-qa/seatingstudents-step-5.webp" alt="step 5">
+            <ul class="simple-slider__legend">
+                <li class="simple-slider__legend-item">The busy position <code class="simple-slider__code simple-slider__code--notability-red">5</code> maps to the <code class="simple-slider__code simple-slider__code--notability-yellow">LEFT COLUMN</code> of <code class="simple-slider__code simple-slider__code--notability-yellow">line 3</code>, so:
+                    <ol class="simple-slider__legend-sublist">
+                        <li class="simple-slider__legend-subitem">Skip this line when counting the permutations.</li>
+                        <li class="simple-slider__legend-subitem">Increment <code class="simple-slider__code simple-slider__code--notability-orange">currBusyDeskIndex</code>. ⚠️ Because <code class="simple-slider__code simple-slider__code--notability-red">currBusyDeskValue</code> pointed to a <code class="simple-slider__code simple-slider__code--notability-yellow">LEFT COLUMN</code> (<code class="simple-slider__code simple-slider__code--notability-red">5</code>), the next value <code class="simple-slider__code simple-slider__code--notability-sky">6</code> tells you the <code class="simple-slider__code simple-slider__code--notability-yellow">RIGHT COLUMN</code> is also busy. You can ignore that extra information and simply advance again with <code class="simple-slider__code simple-slider__code--notability-orange">currBusyDeskIndex++</code>.</li>
+                    </ol>
+                </li>
+            </ul>
         </div>
         <div class="simple-slider__slide" data-simple-slider-slide>
             <img src="assets/interviews-qa/seatingstudents-step-6.webp" alt="step 6">
+            <ul class="simple-slider__legend">
+                <li class="simple-slider__legend-item">From here, repeat the same loop until every line has been processed.</li>
+            </ul>
         </div>
     </div>
 
