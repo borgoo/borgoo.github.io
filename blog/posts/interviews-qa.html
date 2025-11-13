@@ -649,7 +649,7 @@ person switch {
             Constraints:
             <ul>
                 <li>A dog is happy if it has exactly 8 steaks</li>
-                <li>A dog die if it has exactly 4 steaks</li>
+                <li>A dog dies if it has exactly 4 steaks</li>
                 <li>Each dog MUST have at least 1 steak</li>
                 <li>Each dog can eat at most 8 steaks</li>
                 <li>You MUST give to the dogs all the possible steaks (BUT a dog cannot eat more than 8 steaks)</li>
@@ -693,3 +693,162 @@ person switch {
         </p>
 <span>
 </details>  <!-- Using .NET implement the CountHappyDogs(int n, int availableSteaks) function [time limit: 20'] -->
+
+<h3>Milan Consultancy Company • JR-Mid FullStack dev • 32-35k</h3>
+<p>Technical interview for a consultancy company in Milan. The position is for a JR-Mid FullStack dev who will work with technologies like React.js, .NET, NoSQL databases, Python FastAPI, and Java Spring Boot.</p>
+<details>
+    <summary>Recursive sorting algorithm</summary>
+    <span>
+        <p>
+            [Q.1]:<br>
+            <i>What's a recursive sorting algorithm (considering an int[] as input)? Do you know any examples?</i>
+        </p>        
+        [A.1]:<br>
+        <p>
+            A recursive algorithm calls itself within its own implementation.
+            Typically a recursive approach solves a problem by breaking it down into smaller sub-problems (to be solved recursively).
+            A template structure for a recursive algorithm could be: 
+            <ol>
+                <li>Identify the base case(s) and stop the recursion when reached</li>
+                <li>Split the problem into smaller sub-problems and solve them recursively</li>
+                <li>Combine the results of the sub-problems to get the final result</li>
+            </ol>
+            A recursive algorithm can always be implemented iteratively by using a stack to keep track of the sub-problems to be solved. This can be helpful in some cases to avoid system stack management overhead.<br>
+            A recursive sorting algorithm is a sorting algorithm that uses a recursive approach to sort the input array.<br>
+            MergeSort and QuickSort are two examples of recursive sorting algorithms.
+        </p>
+    </span>
+</details> <!-- Recoursive sorting algorithm -->
+
+<details>
+    <summary>Using any language you like, implement the QuickSort(int[] arr) algorithm</summary>
+    <span>
+        <p>
+            [Q.2]:<br>
+            <i>Using any language you like, implement the QuickSort(int[] arr) algorithm that returns the input array sorted in ascending order. The method signature MUST be: int[] QuickSort(int[] arr).<br>
+            Remember that QuickSort:
+            <ol>
+                <li>Get a number from the array (called pivot)</li>
+                <li>Create two sub-arrays: one with all the numbers less than the pivot and one with all the numbers greater than the pivot</li>
+                <li>Recursively apply the same process to the two sub-arrays</li>
+                <li>In the end must return the sorted array</li>
+            </ol>
+        </i>
+        </p>
+        
+        [A.2]:<br>
+        <p>
+            Here's the implementation in C#:
+            <pre><code> public int[] QuickSort(int[] arr) {
+    int n = arr.Length;
+    if (n <= 1) return arr;
+
+    int pivot = arr[0];
+    List<int> littleOnes = [];
+    List<int> greatest = [];
+    for (int i = 1; i < n; i++) {
+        if (arr[i] < pivot) littleOnes.Add(arr[i]);
+        else greatest.Add(arr[i]);
+    }
+
+    int[] before = QuickSort([.. littleOnes]);
+    int[] after = QuickSort([.. greatest]);
+
+    int[] result = new int[n];
+    Array.Copy(before, result, before.Length);
+    result[before.Length] = pivot;
+    Array.Copy(after, 0, result, before.Length+1, after.Length);
+    return result;
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidFSCompany/MilanJRMidFSCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>The QuickSort algorithm has: 
+            <ul>
+                <li>O(n*log n) time complexity</li>
+                <li>O(log n) space complexity</li>
+            </ul>
+        </p>
+    </span>
+</details> <!-- Using any language you like, implement the QuickSort(int[] arr) algorithm -->
+
+<details>
+    <summary>Using any language you like, implement the CountValleys(string track) function</summary>
+    <span>
+        <p>
+            [Q.3]:<br>
+            <i>A hiker tracks his steps during the hike: D-downhill, U-uphill.
+                Hikes always start and end at sea level, and each step up or down represents a unit change in altitude.
+                A mountain is a sequence of consecutive steps above sea level.
+                A valley is a sequence of consecutive steps below sea level.
+                Given the sequence of up and down steps during a hike, find and return the number of valleys walked through. 
+        </i>
+        </p>
+        
+        [A.3]:<br>
+        <p>
+            Here's the implementation in C#:
+            <pre><code> private static readonly Dictionary<char, int> _stepIncrement = new() {
+    { 'D', -1},
+    { 'U', 1}
+};
+
+public int CountValleys(string track) {
+    const int seaLevel = 0;
+    int numOfValleys = 0;
+    int currHeight = seaLevel;
+
+    if (string.IsNullOrEmpty(track)) return currHeight;
+
+    foreach(char step in track) {
+
+        int inc = _stepIncrement[step];
+
+        bool currentlyOnAMountain = currHeight > 0;
+        currHeight += inc;
+        if (currHeight == 0 && !currentlyOnAMountain) numOfValleys++;
+
+    }           
+    return numOfValleys;           
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidFSCompany/MilanJRMidFSCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>I've obtained:
+            <ul>
+                <li>O(n) time complexity</li>
+                <li>O(1) space complexity</li>
+            </ul>
+        </p>
+    </span>
+</details> <!-- Using any language you like, implement the CountValleys(string track) function -->
+
+<details>
+    <summary>ORM</summary>
+    <span>
+        <p>
+            [Q.4]:<br>
+            <i>What's an ORM? What's the most famous one in .NET context?</i>
+        </p>        
+        [A.4]:<br>
+        <p>
+            ORM stands for Object-Relational Mapping. It's a technique that maps objects to database tables and vice versa.
+            The most famous ORM in the .NET context is Entity Framework (EF).
+            There are many others for .NET like Dapper and NHibernate.
+            EF, in particular, lets you manage the database schema directly from the code through configuration files for tables, relations, and constraints. This is called the Code First approach. I like it because it helps projects maintain persistence ignorance.
+            In a legacy environment, EF can be used in its Database First approach to map the existing database schema to objects.
+        </p>
+    </span>
+</details> <!-- ORM -->
+
+<details>
+    <summary>Docker</summary>
+    <span>
+        <p>
+            [Q.5]:<br>
+            <i>What do you know about Docker?</i>
+        </p>        
+        [A.5]:<br>
+        <p>Docker is an open-source platform that lets you build, ship, and run applications in containers. The main advantage is separating the environment from the application, making it portable and easy to deploy. Since I learned it, I tend to use it instead of VMs because it is
+            more lightweight and faster to start (in fact Docker shares the host kernel but abstracts the filesystem and the processes).
+        </p>
+    </span>
+</details> <!-- Docker -->
