@@ -1,0 +1,45 @@
+<blockquote>Brace yourself, winter is coming! 🐺🗡️</blockquote>
+
+<p>Luckily with the winter season comes the <a href="https://adventofcode.com/2025/about" target="_blank">Advent of Code</a>: a yearly challenge to test your coding and problem-solving skills.</p>
+<p>I learned about AoC last year (2024) from a friend of mine and since then I've fallen in love with it. I initially solved the <a href="https://github.com/borgoo/AdventOfCode2024" target="_blank">2024 AoC</a> with a naive approach: as a rookie I chose
+    to use .NET as the target language (since from that year on I've been trying to improve my .NET skills) and I solved the challenges with a CLI approach application.
+    Fancy animations and fancy timers were a nice touch, but IMHO I was a bit out of focus on the challenge spirit: solving increasingly complex daily problems starting from simple inputs and testing them on the given examples.
+</p>
+<p>I was proud of myself for being able to solve the challenges in the first place, but I felt like something better could be done.</p>
+<p>Time passed after the last solution submission for the 2024 AoC... and eventually in the middle of the year I started looking for a new job as a .NET developer... it was at this time that, during an interview, I came into contact with the concept of <a href="./post.html?id=interviews-qa#tdd-summary" target="_blank">TDD (Test Driven Development)</a>.</p>
+<p>With TDD, it was love at first sight. It seemed to fit perfectly with the AoC challenges, so I started using it - and that's how my <a href="https://github.com/borgoo/advent-of-code-2023" target="_blank">AoC 2023</a> was coded.</p>
+<p>In the spirit of saving time, I also wrote a small batch script to speed up the creation of the skeleton for each new daily challenge.</p>
+<p>Finally, I wrapped all these features into a template you can find <a href="https://github.com/borgoo/advent-of-code-template" target="_blank">here</a>.</p>
+
+<h2>How to use the template</h2>
+
+<p>The template keeps everything scripted and test-driven inside Visual Studio. Here's the routine I follow each day:</p>
+<ol>
+    <li><strong>Initial setup (first time only).</strong><br>
+        Clone the <a href="https://github.com/borgoo/advent-of-code-template" target="_blank">repository</a>.
+        <img src="assets/advent-of-code-2025-template/1.webp" alt="copy repository link">
+        <img src="assets/advent-of-code-2025-template/2.webp" alt="git clone">
+    </li>
+    <li>Open the solution in Visual Studio 2022 (or later) at <code>advent-of-code-template &gt; AdventOfCode &gt; AdventOfCode.slnx</code>.</li>
+    <li><strong>Scaffold Day 1.</strong><br> Run the template script to create the Day 1 folders and starter files.
+        <img src="assets/advent-of-code-2025-template/3.webp" alt="day 1 template">
+        ⚠️ You can use <code>.\template.bat 1 -rf</code> to remove the generated artifacts for Day 1 and start fresh if needed.
+    </li>
+    <li><strong>Work on the Day1.Part1 files.</strong>
+        <ol>
+            <li>Paste the sample input (from the Advent of Code website) into <code>Day1.Part1.SampleInput.txt</code>.</li>
+            <li>Paste the full puzzle input into <code>Day1.Part1.PuzzleInput.txt</code>.</li>
+            <li>Adjust <code>Day1.Part1.Test.cs</code>: rename methods, update expected results, and tailor the test flow.</li>
+            <li>Implement the solution in <code>Day1.Part1.cs</code>.</li>
+            <li>Run the tests until they pass against the sample data.</li>
+            <li>Replace the placeholder expected value in <code>Day1.Part1.Test.cs</code> with the verified puzzle answer.</li>
+            <li>Capture notes in <code>Day1.md</code> with the challenge description and any insights.</li>
+        </ol>
+        <img src="assets/advent-of-code-2025-template/4.webp" alt="day 1 part 1 files">
+    </li>
+    <li>Repeat the same flow for the Day1.Part2 files.</li>
+</ol>
+
+<h2>Good luck!</h2>
+<p>That's pretty much how I tackle each Advent of Code day with this template. My English might not be perfect, but I hope these notes help you speed things up and keep the focus on solving the puzzles.</p>
+<p>Good luck to everyone jumping into AoC 2025—see you on the leaderboards!</p>

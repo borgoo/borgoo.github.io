@@ -82,6 +82,8 @@ class BlogPost {
     if (window.SimpleSlider && typeof window.SimpleSlider.initAll === 'function') {
       window.SimpleSlider.initAll(this.postContainer);
     }
+
+    this.handleHashNavigation();
   }
 
   updateMetaTags(post) {
@@ -225,6 +227,30 @@ class BlogPost {
     `;
   }
 }
+
+BlogPost.prototype.handleHashNavigation = function () {
+  const rawHash = window.location.hash;
+  if (!rawHash) {
+    return;
+  }
+
+  try {
+    const selector = decodeURIComponent(rawHash);
+    const target = this.postContainer.querySelector(selector);
+    if (!target) {
+      return;
+    }
+
+    const parentDetails = target.closest('details');
+    if (parentDetails && !parentDetails.open) {
+      parentDetails.open = true;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (error) {
+    console.warn('Failed to navigate to hash:', error);
+  }
+};
 
 
 document.addEventListener('DOMContentLoaded', () => {
