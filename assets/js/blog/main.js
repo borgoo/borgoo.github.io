@@ -16,7 +16,15 @@ class BlogHomepage {
         throw new Error('Failed to load posts');
       }
       
-      const posts = await response.json();
+      let posts = await response.json();
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      posts = posts.filter(post => {
+        const postDate = new Date(post.createdDate);
+        postDate.setHours(0, 0, 0, 0);
+        return postDate <= today;
+      });
       
       posts.sort((a, b) => {
         const dateA = new Date(a.updatedDate || a.createdDate);
