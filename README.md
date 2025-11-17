@@ -17,7 +17,7 @@ This portfolio website represents my professional journey in software developmen
 - **Professional Experience**: Over 6 years of software development experience
 - **Featured Projects**: From massive PDF generation platforms to mobile apps serving 100K+ users
 - **Technical Skills**: Backend development with C# and .NET, frontend with React and Angular, plus various databases and tools
-- **Blog**: Technical writings and learning journey documentation ([Ez Blog](https://github.com/borgoo/ez-blog))
+- **Blog**: Technical writings and learning journey documentation ([Ez Blog 2.0](https://github.com/borgoo/ez-blog-2))
 - **Contact Information**: Ready to discuss new opportunities and collaborations
 
 ## Technologies Used
@@ -34,14 +34,17 @@ This portfolio website represents my professional journey in software developmen
 ```
 borgoo.github.io/
 ├── assets/          # All static assets (CSS, JS, fonts, images)
-│   ├── css/         # Stylesheets (main, blog, fonts, header-logo)
-│   ├── js/          # JavaScript files (main, blog modules)
+│   ├── css/         # Stylesheets (main, fonts, header-logo)
+│   ├── js/          # JavaScript files (main)
 │   ├── images/      # Images and icons
 │   └── fonts/       # Custom font files
-├── blog/            # Ez Blog - Technical blog and writings
-│   ├── posts/       # Individual blog posts
-│   ├── data/        # Blog data (DB_posts.js)
-│   └── templates/   # Post templates
+├── blog/            # Ez Blog 2.0 - Technical blog
+│   ├── buildable-drafts/  # Source files (drafts, not versioned)
+│   ├── posts/       # Generated static pages
+│   ├── css/         # Blog stylesheets
+│   ├── js/          # Blog JavaScript and build scripts
+│   ├── build.js     # Main build script
+│   └── index.html   # Generated blog homepage
 └── index.html       # Main portfolio page
 ```
 
@@ -54,7 +57,7 @@ borgoo.github.io/
 - Project showcase with detailed descriptions
 - Professional experience timeline
 
-### Ez Blog
+### Ez Blog 2.0
 - Clean, minimalist blog design
 - Dark/Light theme switcher
 - Static site generation (GitHub Pages compatible)
@@ -72,7 +75,7 @@ Visit the [blog section](https://borgoo.github.io/blog/) to read about:
 - Technical explorations and experiments
 - Coding practices and problem-solving
 
-The blog is built with [Ez Blog](https://github.com/borgoo/ez-blog), a lightweight static blog system designed for simplicity and performance.
+The blog is built with [Ez Blog 2.0](https://github.com/borgoo/ez-blog-2), a lightweight static blog system designed for simplicity and performance.
 
 ## Contact
 

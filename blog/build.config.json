@@ -1,0 +1,104 @@
+{
+    "blog": {
+      "title": "alessandro's blog",
+      "description": "Personal blog of Alessandro Borgonovo, Software Engineer with 6+ years experience. Sharing insights on backend development, fintech, C#, .NET, React, and technology trends.",
+      "baseUrl": "https://borgoo.github.io/blog/",
+      "author": {
+        "name": "Alessandro Borgonovo",
+        "email": "alessandro.borgonovo.info@gmail.com",
+        "website": "https://borgoo.github.io/",
+        "github": "https://github.com/borgoo",
+        "linkedin": "https://linkedin.com/in/alessandro-borgonovo-9754161b6",
+        "jobTitle": "Software Engineer"
+      }
+    },
+    "paths": {
+      "postsDb": "buildable-drafts/data/DB_posts.js",
+      "draftsDir": "buildable-drafts/",
+      "postsDir": "posts/",
+      "postTemplate": "post.html",
+      "indexTemplate": "index.html",
+      "outputDir": ".",
+      "assetsSourceDir": "buildable-drafts/assets/",
+      "assetsOutputDir": "assets/"
+    },
+    "meta": {
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "title": "alessandro's blog",
+      "description": "Personal blog of Alessandro Borgonovo, Software Engineer with 6+ years experience. Sharing insights on backend development, fintech, C#, .NET, React, and technology trends.",
+      "author": "Alessandro Borgonovo",
+      "keywords": "software engineering blog, backend development, fintech, C#, .NET, React, Angular, technology insights, programming, web development, alessandro blog, borgoo, boborgo",
+      "robots": "index, follow",
+      "language": "en",
+      "revisitAfter": "7 days",
+      "canonical": "https://borgoo.github.io/blog/",
+      "openGraph": {
+        "type": "website",
+        "url": "https://borgoo.github.io/blog/",
+        "title": "alessandro's blog",
+        "description": "Personal blog of Alessandro Borgonovo, Software Engineer with 6+ years experience. Sharing insights on backend development, fintech, C#, .NET, React, and technology trends.",
+        "siteName": "alessandro's blog"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "url": "https://borgoo.github.io/blog/",
+        "title": "alessandro's blog",
+        "description": "Personal blog of Alessandro Borgonovo, Software Engineer with 6+ years experience. Sharing insights on backend development, fintech, C#, .NET, React, and technology trends."
+      },
+      "favicon": "../assets/images/icons/favicon.ico",
+      "logo": "../assets/images/icons/logo.webp",
+      "logoLink": "../index.html",
+      "blogLogoLink": "./index.html",
+      "stylesheet": "./css/blog.css",
+      "headerStylesheet": "../assets/css/header-logo.css",
+      "themeInitScript": "./js/theme-init.js",
+      "themeScript": "./js/theme.js",
+      "mainScript": "./js/main.js",
+      "simpleSliderScript": "./js/simple-slider.js"
+    },
+    "structuredData": {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "alessandro's blog",
+      "description": "Personal blog of Alessandro Borgonovo, Software Engineer with 6+ years experience. Sharing insights on backend development, fintech, C#, .NET, React, and technology trends.",
+      "url": "https://borgoo.github.io/blog/",
+      "author": {
+        "@type": "Person",
+        "name": "Alessandro Borgonovo",
+        "jobTitle": "Software Engineer",
+        "url": "https://borgoo.github.io/",
+        "sameAs": [
+          "https://github.com/borgoo",
+          "https://linkedin.com/in/alessandro-borgonovo-9754161b6"
+        ]
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Alessandro Borgonovo"
+      },
+      "inLanguage": "en",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://borgoo.github.io/blog/"
+      }
+    },
+    "robots": {
+      "userAgent": "*",
+      "allow": ["/"],
+      "disallow": [],
+      "crawlDelay": null,
+      "sitemapUrl": "https://borgoo.github.io/blog/sitemap.xml"
+    },
+    "sitemap": {
+      "homepage": {
+        "changefreq": "weekly",
+        "priority": "1.0"
+      },
+      "posts": {
+        "changefreq": "monthly",
+        "priority": "0.8"
+      }
+    },
+    "ezBlogGitHubRepo": "https://github.com/borgoo/ez-blog-2"
+  }

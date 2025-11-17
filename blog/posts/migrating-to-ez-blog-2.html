@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>feat: migrate to ez-blog-2 engine - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="feat: migrate to ez-blog-2 engine - alessandro's blog">
+  <meta name="description" content="Why I rebuilt my blog as a static site generator: the problems with JavaScript-rendered content, how truly static sites improve SEO and social media sharing, and the benefits of pre-rendering.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/migrating-to-ez-blog-2.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/migrating-to-ez-blog-2.html">
+  <meta property="og:title" content="feat: migrate to ez-blog-2 engine - alessandro's blog">
+  <meta property="og:description" content="Why I rebuilt my blog as a static site generator: the problems with JavaScript-rendered content, how truly static sites improve SEO and social media sharing, and the benefits of pre-rendering.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="article:published_time" content="2025-11-17">
+  <meta property="article:modified_time" content="2025-11-17">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/migrating-to-ez-blog-2.html">
+  <meta property="twitter:title" content="feat: migrate to ez-blog-2 engine - alessandro's blog">
+  <meta property="twitter:description" content="Why I rebuilt my blog as a static site generator: the problems with JavaScript-rendered content, how truly static sites improve SEO and social media sharing, and the benefits of pre-rendering.">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href="./index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-migrating-to-ez-blog-2">
+      
+    <header class="post__header">
+      <h1>feat: migrate to ez-blog-2 engine</h1>
+      <p class="post__subtitle">Truly static matters</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2025-11-17">November 17, 2025 (today)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <h2>The problem with dynamic static sites</h2>
+
+<p>When I first built <a href="https://github.com/borgoo/ez-blog" target="_blank">Ez Blog</a>, I thought I had created a static blog. After all, it was just HTML, CSS, and vanilla JavaScript—no server-side rendering, no database, no backend. It worked perfectly on GitHub Pages.</p>
+
+<p>But I was wrong. While the files were static, the content wasn't. Each post page was essentially a template that relied on JavaScript to fetch and inject the HTML content at runtime. The homepage dynamically loaded post metadata from a JSON file. This meant that:</p>
+
+<ul>
+    <li>Search engine crawlers had to execute JavaScript to see the content</li>
+    <li>Social media platforms (LinkedIn, Twitter, Facebook) couldn't generate proper preview cards</li>
+    <li>The initial page load showed empty templates before JavaScript kicked in</li>
+    <li>SEO was suboptimal because crawlers might not wait for JavaScript execution</li>
+</ul>
+
+<p>I realized I had built a "dynamic static site"—a contradiction that was hurting discoverability and sharing.</p>
+
+<h2>Why truly static matters</h2>
+
+<blockquote>If a tree falls in a forest and no one is around to hear it, does it make a sound? If a blog post exists but crawlers can't index it, does it matter?</blockquote>
+
+<p>For a personal blog, discoverability is crucial. I wanted people to find my content through search engines and share it on social platforms. The dynamic approach was creating barriers:</p>
+
+<h3>Social media sharing</h3>
+
+<p>When you share a link on LinkedIn, Twitter, or Facebook, these platforms send a crawler to fetch metadata (title, description, image) for the preview card. These crawlers are fast and efficient, but they don't execute JavaScript. They look for meta tags in the raw HTML.</p>
+
+<p>With my dynamic approach, the crawler would see an empty template with generic meta tags, not the post-specific information. The result? Ugly, generic preview cards that didn't represent the content.</p>
+
+<h3>Performance and reliability</h3>
+
+<p>Truly static sites are faster. There's no JavaScript execution delay, no network requests to fetch content, no risk of JavaScript errors breaking the page. The content is just there, ready to be served immediately.</p>
+
+<h2>The solution: Ez Blog 2.0</h2>
+
+<p>I rebuilt the blog as <a href="https://github.com/borgoo/ez-blog-2" target="_blank">Ez Blog 2.0</a>, a static site generator that pre-renders everything during the build process. Now, instead of templates that load content dynamically, the build script generates complete HTML pages for each post.</p>
+
+<h3>How it works</h3>
+
+<p>The build process is straightforward:</p>
+
+<ol>
+    <li><b>Read post metadata</b> from <code>DB_posts.js</code></li>
+    <li><b>Load HTML content</b> from individual post files</li>
+    <li><b>Generate complete HTML pages</b> with proper meta tags, Open Graph tags, and Twitter Cards</li>
+    <li><b>Generate the homepage</b> with all posts pre-rendered</li>
+    <li><b>Generate SEO files</b> like <code>robots.txt</code> and <code>sitemap.xml</code></li>
+</ol>
+
+<p>I keep my drafts in a separate directory that's versioned in a private repository. A symlink connects this directory to the main blog project, allowing the build script to access the draft files without exposing them in the public repository. When I run the build, it reads from the linked drafts directory and generates the final posts in the <code>posts/</code> directory. Only these generated files are published—the drafts remain private.</p>
+
+<p>Each generated post page is a complete, self-contained HTML file with:</p>
+
+<ul>
+    <li>Proper meta tags for SEO</li>
+    <li>Open Graph tags for Facebook and LinkedIn</li>
+    <li>Twitter Card tags for Twitter</li>
+    <li>Structured data (Schema.org) for rich snippets</li>
+    <li>All content embedded directly in the HTML</li>
+</ul>
+
+<h3>The build system</h3>
+
+<p>The build system is a simple Node.js script that:</p>
+
+<ul>
+    <li>Reads the configuration from <code>build.config.json</code></li>
+    <li>Processes each post and generates a complete HTML page</li>
+    <li>Copies assets (images) to the output directory</li>
+    <li>Generates the homepage with all posts</li>
+    <li>Creates <code>robots.txt</code> and <code>sitemap.xml</code> automatically</li>
+</ul>
+
+<p>Running <code>node build.js</code> transforms your drafts into a fully static website ready for deployment.</p>
+
+<h2>The results</h2>
+
+<p>After migrating to Ez Blog 2.0, the improvements were immediate:</p>
+
+<ul>
+    <li><b>Better SEO</b>: Search engines can index content immediately without executing JavaScript</li>
+    <li><b>Perfect social sharing</b>: LinkedIn, Twitter, and Facebook now show proper preview cards with titles, descriptions, and images</li>
+    <li><b>Faster load times</b>: No JavaScript execution needed to display content</li>
+    <li><b>Better reliability</b>: No risk of JavaScript errors preventing content from loading</li>
+    <li><b>Improved accessibility</b>: Content is available even if JavaScript is disabled</li>
+</ul>
+
+<h2>Lessons learned</h2>
+
+<p>This migration taught me an important lesson: <i>static</i> doesn't just mean "no server-side code." It means the content is fully rendered and ready to serve, without requiring any client-side processing.</p>
+
+<p>For a blog hosted on GitHub Pages, truly static is the way to go. It's simpler, faster, more reliable, and works better with search engines and social media platforms. The build step adds a small amount of complexity to the workflow, but the benefits far outweigh the costs.</p>
+
+<p>If you're building a blog or documentation site, consider using a static site generator. Your future self (and your readers) will thank you.</p>
+
+
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+</body>
+</html>

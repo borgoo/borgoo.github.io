@@ -6,9 +6,6 @@ Allow: /
 # Sitemaps
 Sitemap: https://borgoo.github.io/blog/sitemap.xml
 
-# Crawl delay (optional, prevents overwhelming your server)
-# Crawl-delay: 10
-
 # Disallow specific paths (if needed)
 # Disallow: /private/
 # Disallow: /admin/
