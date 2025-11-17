@@ -159,7 +159,7 @@ body {
 
 .hero__window {
     border-radius: 30px;
-    background-image: url('../images/parallax/empty.png');
+    background-image: url('../images/parallax/empty.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center top;
@@ -1477,7 +1477,7 @@ body {
 
 
 .footer-window {
-    background-image: url('../images/parallax/footer-empty.png');
+    background-image: url('../images/parallax/footer-empty.webp');
     background-size: cover;
     background-position: top 0 left 0;
     background-repeat: no-repeat;

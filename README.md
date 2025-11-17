@@ -4,7 +4,7 @@ Welcome to my personal space on the web! This is where I showcase my journey as 
 
 ### [Go to website](https://borgoo.github.io/)
 
-![Website Preview](assets/screenshots/screenshot-1.png)
+![Website Preview](assets/screenshots/screenshot-1.webp)
 
 ## About This Site
 

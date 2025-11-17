@@ -28,7 +28,7 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/images/icons/favicon.ico">
-    <link rel="apple-touch-icon" href="assets/images/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/images/icons/logo.webp">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="assets/css/main.css">
@@ -42,6 +42,8 @@
             </filter>
         </defs>
     </svg>
+    <link rel="preload" as="image" href="assets/images/parallax/empty.webp" fetchpriority="high">
+    
 </head>
 <body>
  
@@ -50,7 +52,7 @@
             <div class="header__container">
                 
                 <div class="header__logo-container">
-                    <img src="assets/images/icons/logo.png" alt="Alessandro Borgonovo" class="header__logo-icon">
+                    <img src="assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon" loading="lazy" decoding="async">
                     <a href="#home" class="header__logo"><span class="first-letter">a</span>lessandro &nbsp;<span class="first-letter">b</span>orgonovo</a>
                 </div>
                 
@@ -94,11 +96,11 @@
         <section id="home" class="hero">
 
             <div class="hero__window">
-                <img src="assets/images/parallax/big-planet.png" alt="Big Planet" class="hero__parallax hero__parallax--big-planet">
-                <img src="assets/images/parallax/planets.png" alt="Planets" class="hero__parallax hero__parallax--planets">
-                <img src="assets/images/parallax/saturn.png" alt="Saturn" class="hero__parallax hero__parallax--saturn">
-                <img src="assets/images/parallax/rocket.png" alt="Rocket" class="hero__parallax hero__parallax--rocket">
-                <img src="assets/images/parallax/comet.png" alt="Comet" class="hero__parallax hero__parallax--comet">
+                <img src="assets/images/parallax/big-planet.webp" alt="Big Planet" class="hero__parallax hero__parallax--big-planet" loading="lazy" decoding="async">
+                <img src="assets/images/parallax/planets.webp" alt="Planets" class="hero__parallax hero__parallax--planets" loading="lazy" decoding="async">
+                <img src="assets/images/parallax/saturn.webp" alt="Saturn" class="hero__parallax hero__parallax--saturn" loading="lazy" decoding="async">
+                <img src="assets/images/parallax/rocket.webp" alt="Rocket" class="hero__parallax hero__parallax--rocket" loading="lazy" decoding="async">
+                <img src="assets/images/parallax/comet.webp" alt="Comet" class="hero__parallax hero__parallax--comet" loading="lazy" decoding="async">
                 <div class="hero__content">
                     <h2 class="hero__subtitle">Hi, I'm</h2>
                     <svg class="hero__title-svg" viewBox="0 0 6400 1600" xmlns="http://www.w3.org/2000/svg">
@@ -392,8 +394,8 @@
         <section id="footer">
             <div class="footer-window">
                 <h2 class="footer-window__title">Get In Touch</h2>
-                <img src="assets/images/parallax/comet.png" alt="Comet" class="footer__parallax footer__parallax--comet">
-                <img src="assets/images/parallax/alien.png" alt="Alien" class="footer__parallax footer__parallax--alien">
+                <img src="assets/images/parallax/comet.webp" alt="Comet" class="footer__parallax footer__parallax--comet" loading="lazy" decoding="async">
+                <img src="assets/images/parallax/alien.webp" alt="Alien" class="footer__parallax footer__parallax--alien" loading="lazy" decoding="async">
                     
                 <div class="footer__content">
                     <div class="contact__info">
