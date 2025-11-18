@@ -22,6 +22,36 @@ const removeId = removeIndex !== -1 && args[removeIndex + 1] ? args[removeIndex 
 // Check for --remove-all flag
 const removeAll = args.includes('--remove-all') || args.includes('-ra');
 
+// Validate arguments - check for unknown parameters
+const validFlags = ['--index-only', '-i', '--id', '-id', '--remove', '-r', '--remove-all', '-ra'];
+const usedIndices = new Set();
+if (indexOnly) {
+  usedIndices.add(args.indexOf('--index-only') !== -1 ? args.indexOf('--index-only') : args.indexOf('-i'));
+}
+if (idIndex !== -1) {
+  usedIndices.add(idIndex);
+  usedIndices.add(idIndex + 1); // The value after --id
+}
+if (removeIndex !== -1) {
+  usedIndices.add(removeIndex);
+  usedIndices.add(removeIndex + 1); // The value after --remove
+}
+if (removeAll) {
+  usedIndices.add(args.indexOf('--remove-all') !== -1 ? args.indexOf('--remove-all') : args.indexOf('-ra'));
+}
+
+// Check for unknown arguments
+const unknownArgs = args.filter((arg, index) => !usedIndices.has(index));
+if (unknownArgs.length > 0) {
+  console.error('\nError: Unknown parameter(s):', unknownArgs.join(', '));
+  console.error('\nValid parameters:');
+  console.error('  --index-only, -i          Force generation of index.html');
+  console.error('  --id <post-id>, -id <post-id>  Force generation of specific post');
+  console.error('  --remove <post-id>, -r <post-id>  Remove specific post');
+  console.error('  --remove-all, -ra        Remove all generated files');
+  process.exit(1);
+}
+
 // Load configuration
 const config = JSON.parse(readFileSync('build.config.json', 'utf8'));
 
@@ -99,9 +129,8 @@ if (indexOnly) {
 // Handle force generation of specific post
 if (forceId) {
   console.log(`Mode: Force generation of post "${forceId}"\n`);
-  const postsAssetsDir = join(config.paths.outputDir, config.paths.postsDir, 'assets');
-  copyAssets(config.paths.assetsSourceDir, postsAssetsDir);
   
+  // Copy data directory to posts/data
   const postsDataDir = join(config.paths.outputDir, config.paths.postsDir, 'data');
   const dataSourceDir = join(config.paths.draftsDir, 'data');
   copyAssets(dataSourceDir, postsDataDir);
@@ -122,16 +151,12 @@ if (forceId) {
 // Full incremental build
 console.log('Mode: Incremental build\n');
 
-// Copy assets to posts/assets (maintaining the same structure as buildable-drafts)
-const postsAssetsDir = join(config.paths.outputDir, config.paths.postsDir, 'assets');
-copyAssets(config.paths.assetsSourceDir, postsAssetsDir);
-
 // Copy data directory to posts/data
 const postsDataDir = join(config.paths.outputDir, config.paths.postsDir, 'data');
 const dataSourceDir = join(config.paths.draftsDir, 'data');
 copyAssets(dataSourceDir, postsDataDir);
 
-// Generate posts incrementally
+// Generate posts incrementally (assets will be copied per-post)
 const result = generateAllPosts(config, { incremental: true, forceId: null });
 
 // If any posts were generated or need regeneration, update index, robots, and sitemap

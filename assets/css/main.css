@@ -159,6 +159,7 @@ body {
 
 .hero__window {
     border-radius: 30px;
+    background-color: #00105e;
     background-image: url('../images/parallax/empty.webp');
     background-size: cover;
     background-repeat: no-repeat;
