@@ -21,7 +21,7 @@
   <meta property="og:description" content="A compilation of all the questions (theoretical and practical) that I encountered during my job search, grouped by company and position.">
   <meta property="og:site_name" content="alessandro's blog">
   <meta property="article:published_time" content="2025-11-06">
-  <meta property="article:modified_time" content="2025-11-13">
+  <meta property="article:modified_time" content="2025-11-17">
   <meta property="article:author" content="Alessandro Borgonovo">
   
   <!-- Twitter -->
@@ -40,10 +40,10 @@
   <header class="header">
     <div class="header__content">
       <div class="header__logo-container">
-        <a href="../index.html" class="header__logo-icon-link">
+        <a href="../../index.html" class="header__logo-icon-link">
           <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
         </a>
-        <a href="./index.html" class="header__title">Blog</a>
+        <a href=".././index.html" class="header__title">Blog</a>
       </div>
       <div class="header__controls">
         <a href=".././index.html" class="go-back"> Go back</a>
@@ -60,11 +60,11 @@
       <p class="post__subtitle">A pragmatic list of questions that I&#039;ve encountered during my job search</p>
       <div class="post__meta">
         <span class="post__meta-item">
-          <time datetime="2025-11-06">November 6, 2025 (11 days ago)</time>
+          <time datetime="2025-11-06">November 6, 2025 (12 days ago)</time>
         </span>
         
           <span class="post__meta-item">
-            <span>Updated: November 13, 2025 (4 days ago)</span>
+            <span>Updated: November 17, 2025 (1 day ago)</span>
           </span>
         
         <span class="post__meta-item">
@@ -768,6 +768,141 @@ person switch {
         </p>
 <span>
 </details>  <!-- Using .NET implement the CountHappyDogs(int n, int availableSteaks) function [time limit: 20'] -->
+<br><p>Since I've passed the first step, I've been invited to the second step: a technical interview face-to-face with a senior developer of the company.</p>
+<details>
+    <summary id="find-all-multiples-dotnet">Using .NET implement the FindAllMultiples(...) function </summary>
+    <span>
+        <p>
+            [Q.7]:<br>
+            <i>Using .NET implement the FindAllMultiples(...) function.<br>
+            Given a series of numbers, return:
+            <ul>
+                <li>All the multiples of 4</li>
+                <li>All the multiples of 9</li>
+                <li>All the multiples of 4 and 9</li>
+            </ul>
+        </i>
+        </p>
+        
+        [A.7]:<br>
+        <p>I won't overcomplicate the assignment, so I just used a tuple as a return type and a simple loop with multiple conditions to check for the multiples. Trying to score some points,
+            I pointed out the advantages of using interfaces as input/output parameters + concrete types in method body.
+        
+<pre><code>public (IEnumerable&lt;int&gt; mulOf4, IEnumerable&lt;int&gt; mulOf9, IEnumerable&lt;int&gt; mulOf4And9 ) FindAllMultiples(IEnumerable&lt;int&gt; nums)
+{
+    List&lt;int&gt; mulOf4 = [];
+    List&lt;int&gt; mulOf9 = [];
+    List&lt;int&gt; mulOf4And9 = [];
+
+    foreach(int num in nums){
+        if (num % 4 == 0) mulOf4.Add(num);
+        if (num % 9 == 0) mulOf9.Add(num);
+        if (num % 4 == 0 && num % 9 == 0) mulOf4And9.Add(num);
+    }
+    return (mulOf4, mulOf9, mulOf4And9);
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidCompany/MilanJRMidCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>I've obtained: 
+            <ul>
+                <li>O(n) time complexity</li>
+                <li>O(n) space complexity</li>
+            </ul>
+        </p>
+<span>
+</details>  <!-- Using .NET implement the FindAllMultiples(...) function -->
+<details>
+    <summary id="build-a-zoo-dotnet">Using .NET build a Zoo </summary>
+    <span>
+        <p>
+            [Q.8]:<br>
+            <i>Using .NET build a Zoo.<br>
+            The zoo will welcome various animals. The Zoo will have the following characteristics:
+            <ul>
+                <li>Will be able to host various kinds of animals: giraffes, elephants and tigers.</li>
+                <li>Will have an Assign function that will allow assigning an animal to a cell in the zoo. The animal will be assigned to the first available cell.</li>
+                <li>Will have an Unassign function that will allow unassigning an animal from a specific position in the zoo (and returns the animal).</li>
+                <li>At any moment it will be able to print the current state of the zoo: for each cell (from 0 to the total number of cells) it will provide the animal type, the position index of the cell and the time of arrival of the animal.</li>
+            </ul>
+        </i>
+        </p>
+        
+        [A.8]:<br>
+        <p>After reading the assignment, some questions were in order. By asking such questions, I enriched the constraints with:
+            <ul>
+                <li>The zoo will have a fixed number of cells (around 20-30).</li>
+                <li>The print function will operate directly on CLI (returning void).</li>
+                <li>The print function will only consider the time of the arrival of the animal (not the entire date).</li>
+                <li>If an operations results impossible, an Exception will be thrown.</li>
+            </ul>
+        </p>
+        <p>I started modeling the classes (records) in my mind (the easy part) and started thinking about the implementation of the "find the first available cell" feature. I spoke out loud
+            about the simple approach of iterating over the zoo cells and returning the first available cell. After securing a (bad) way to solve the challenge, I proposed a better (the 
+            right one probably) approach: a Heap of the available cells initialized at the creation of the zoo.
+            With that in mind, I started the implementation:        
+<pre><code>public abstract record Animal;
+public record Giraffe : Animal;
+public record Elephant : Animal;
+public record Tiger : Animal;
+public class Zoo
+{
+    const string _empty = "Empty";
+    public int Capacity { get; init; }
+    private (Animal animal, TimeOnly arrivalTime)?[] _cells;
+    private PriorityQueue<int, int> _availablePositions = new();
+
+    public Zoo(int capacity)
+    {
+        if(capacity <= 0) throw new ArgumentException("Capacity must be greater than zero.");
+        Capacity = capacity;
+        _cells = new (Animal animal, TimeOnly arrivalTime)?[capacity];
+        for(int i = 0; i < capacity; i++)
+        {
+            _availablePositions.Enqueue(i, i);
+        }
+    }
+
+    public void PrintState()
+    {
+        for(int i = 0; i < Capacity; i++)
+        {
+            if (_cells[i] is null) {
+                Console.WriteLine($"{i}: {_empty}");
+                continue;
+            }
+            StringBuilder sb = new();
+            sb.Append(i + ":");
+            sb.Append(" " + _cells[i]!.Value.animal.GetType().Name);
+            sb.Append(", Arrival Time: " + _cells[i]!.Value.arrivalTime.ToString("HH:mm:ss"));
+            Console.WriteLine(sb.ToString());
+        }
+    }
+
+    public Animal Unassign(int position)
+    {
+        if(position < 0 || position >= Capacity || _cells[position] is null) throw new ArgumentException("Invalid position.");
+        _availablePositions.Enqueue(position, position);
+        return _cells[position]!.Value.animal;
+    }
+    
+    void Assign(Animal animal)
+    {
+        if (_availablePositions.Count == 0) throw new Exception("No available positions.");
+        int position = _availablePositions.Dequeue();
+        _cells[position] = (animal, TimeOnly.FromDateTime(DateTime.Now));
+    }
+}</code></pre>
+        </p>
+        <p><a href="https://github.com/borgoo/interviews-qa/blob/main/InterviewsQA/InterviewsQA.Core/MilanJRMidCompany/MilanJRMidCompanyInterview.cs" target="_blank">Full code here.</a></p>
+        <p>I've obtained: 
+            <ul>
+                <li>O(1) time complexity in the Assign method due to the use of a Heap</li>
+                <li>O(k) space complexity (k = capacity)</li>
+            </ul>
+        </p>
+<span>
+</details>  <!-- Using .NET build a Zoo -->
+
 
 <h3>Milan Consultancy Company • JR-Mid FullStack dev • 32-35k</h3>
 <p>Technical interview for a consultancy company in Milan. The position is for a JR-Mid FullStack dev who will work with technologies like React.js, .NET, NoSQL databases, Python FastAPI, and Java Spring Boot.</p>

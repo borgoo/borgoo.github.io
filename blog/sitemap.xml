@@ -2,19 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://borgoo.github.io/blog/</loc>
-    <lastmod>2025-11-17</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://borgoo.github.io/blog/posts/migrating-to-ez-blog-2.html</loc>
-    <lastmod>2025-11-17</lastmod>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://borgoo.github.io/blog/posts/interviews-qa.html</loc>
-    <lastmod>2025-11-13</lastmod>
+    <lastmod>2025-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

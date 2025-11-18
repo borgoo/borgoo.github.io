@@ -22,7 +22,7 @@ export function generateHeader(config, options = {}) {
           <img src="${logoPath}" alt="${escapeHtml(blog.author.name)}" class="header__logo-icon">
         </a>
         <div class="header__logo-wrapper-home">
-          <a href="${meta.blogLogoLink}" class="header__logo header__logo--animated"><span class="first-letter">E</span>z &nbsp;<span class="first-letter">b</span>log</a>
+          <a href="${meta.blogLogoLink}" class="header__logo header__logo--animated"><span class="first-letter">a</span>lessandro's &nbsp;<span class="first-letter">b</span>log</a>
           <a href="${meta.blogLogoLink}" class="header__title header__title--static">Blog</a>
         </div>
       </div>
@@ -36,10 +36,10 @@ export function generateHeader(config, options = {}) {
   <header class="header">
     <div class="header__content">
       <div class="header__logo-container">
-        <a href="${meta.logoLink}" class="header__logo-icon-link">
+        <a href="../${meta.logoLink}" class="header__logo-icon-link">
           <img src="../${logoPath}" alt="${escapeHtml(blog.author.name)}" class="header__logo-icon">
         </a>
-        <a href="${meta.blogLogoLink}" class="header__title">Blog</a>
+        <a href="../${meta.blogLogoLink}" class="header__title">Blog</a>
       </div>
       <div class="header__controls">
         ${showGoBack ? `<a href="../${meta.blogLogoLink}" class="go-back"> Go back</a>` : ''}

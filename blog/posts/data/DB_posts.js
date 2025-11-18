@@ -18,7 +18,7 @@
     "abstract": "A compilation of all the questions (theoretical and practical) that I encountered during my job search, grouped by company and position.",    "author": "Alessandro Borgonovo",
     "authorNickname": "@boborgo",
     "createdDate": "2025-11-06",
-    "updatedDate": "2025-11-13"
+    "updatedDate": "2025-11-17"
   },
   {
     "id": "advent-of-code-2025-template",
@@ -38,8 +38,8 @@
     "abstract": "Why I rebuilt my blog as a static site generator: the problems with JavaScript-rendered content, how truly static sites improve SEO and social media sharing, and the benefits of pre-rendering.",
     "author": "Alessandro Borgonovo",
     "authorNickname": "@boborgo",
-    "createdDate": "2025-11-17",
-    "updatedDate": "2025-11-17"
+    "createdDate": "2025-11-18",
+    "updatedDate": "2025-11-18"
   }
 ]
 
