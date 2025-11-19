@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Fisher-Yates data structure - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="Fisher-Yates data structure - alessandro's blog">
+  <meta name="description" content="A C# implementation of the Fisher-Yates shuffle algorithm that creates a bag of random numbers, ensuring uniqueness without duplicate checking. Exploring the algorithm, its limitations, and practical use cases.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/fisher-yates-data-structure.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/fisher-yates-data-structure.html">
+  <meta property="og:title" content="Fisher-Yates data structure - alessandro's blog">
+  <meta property="og:description" content="A C# implementation of the Fisher-Yates shuffle algorithm that creates a bag of random numbers, ensuring uniqueness without duplicate checking. Exploring the algorithm, its limitations, and practical use cases.">
+  <meta property="og:site_name" content="alessandro's blog">
+  
+  <meta property="article:published_time" content="2025-11-19">
+  <meta property="article:modified_time" content="2025-11-19">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/fisher-yates-data-structure.html">
+  <meta property="twitter:title" content="Fisher-Yates data structure - alessandro's blog">
+  <meta property="twitter:description" content="A C# implementation of the Fisher-Yates shuffle algorithm that creates a bag of random numbers, ensuring uniqueness without duplicate checking. Exploring the algorithm, its limitations, and practical use cases.">
+  
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-fisher-yates-data-structure">
+      
+    <header class="post__header">
+      <h1>Fisher-Yates data structure</h1>
+      <p class="post__subtitle">My favourite random numbers bag data structure</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2025-11-19">November 19, 2025 (today)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <h2>The problem: generating unique random numbers</h2>
+
+<p>I recently found myself in a situation where I needed to generate five random numbers, and I absolutely didn't want any of them to be repeated. The naive approach would be to keep generating random numbers and checking if they've been used before, but that's inefficient and can lead to unpredictable performance—especially as the pool of available numbers shrinks.</p>
+
+<p>I started looking for an efficient way to solve this problem. The key insight I was searching for was a data structure that could maintain a pool of available numbers and allow me to randomly extract from it, ensuring uniqueness without any duplicate checking overhead.</p>
+
+<p>During my research, I encountered the <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank">The Fisher-Yates shuffle algorithm</a>. This algorithm provided exactly what I needed: a way to randomly select unique values from a range. I realized I could adapt it to create a "bag" data structure where numbers are randomly drawn and removed, guaranteeing uniqueness. This led me to implement a C# library called <a href="https://github.com/borgoo/fisher-yates-dotnet" target="_blank">fisher-yates-dotnet</a> that uses the Fisher-Yates algorithm as the foundation for this efficient random numbers bag.</p>
+
+<h2>What is the Fisher-Yates shuffle?</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" target="_blank">The Fisher-Yates shuffle</a> is an algorithm for generating a random permutation of a finite sequence. It ensures that every possible permutation is equally likely, which makes it perfect for unbiased random selection. The modern version of the algorithm, introduced by Richard Durstenfeld in 1964, operates in O(n) time complexity and shuffles the sequence in place.</p>
+
+<p>The classic algorithm works by iterating through the array from the last element to the first. For each position, it picks a random index between zero and the current position (inclusive), then swaps the element at that random index with the element at the current position. This guarantees that each element has an equal chance of ending up in any position.</p>
+
+<p>However, my implementation takes a different approach: instead of shuffling the entire array upfront, it applies the Fisher-Yates principle incrementally. The array starts in order, and each time you extract a value, it performs one swap operation—effectively doing one step of the Fisher-Yates shuffle on demand. This means you only pay the cost of shuffling for the values you actually extract.</p>
+
+<h2>How the algorithm works visually</h2>
+
+<p>Let me walk you through how the incremental Fisher-Yates approach works. The array starts in order, and shuffling happens on demand with each extraction:</p>
+
+<div class="simple-slider" data-simple-slider>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/fisher-yates-data-structure/images/step-1.webp" alt="step 1">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item"><code class="simple-slider__code">RemainingCount</code> is initialized to the range size.</li>
+            <li class="simple-slider__legend-item"><code class="simple-slider__code simple-slider__code--notability-fuchsia">LastIndex</code> is initialized to the last index of the array.</li>
+            <li class="simple-slider__legend-item">We start with an array containing all possible values in order. In this example, we have numbers from 0 to 9. The array is not shuffled yet—it's initialized in sequential order.</li>
+        </ul>
+    </div>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/fisher-yates-data-structure/images/step-2.webp" alt="step 2">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item">When we call <code class="simple-slider__code">GetNextRandom()</code>, we pick a random index from the <code class="simple-slider__code simple-slider__code--notability-sky">Active</code> portion (0 to <code class="simple-slider__code simple-slider__code--notability-fuchsia">LastIndex</code>—excluded). Let's say we pick <code class="simple-slider__code simple-slider__code--notability-yellow">index</code> 4.</li>
+        </ul>
+    </div>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/fisher-yates-data-structure/images/step-3.webp" alt="step 3">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item">We swap the value at index 4 with the value at the last active position, then decrement the <code class="simple-slider__code simple-slider__code--notability-fuchsia">LastIndex</code>—this single swap operation is O(1).</li>
+            <li class="simple-slider__legend-item">We can now return the value that we have moved into the "<code class="simple-slider__code simple-slider__code--notability-red">already extracted</code>" tail.</li>
+        </ul>
+    </div>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/fisher-yates-data-structure/images/step-4.webp" alt="step 4">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item">For the next extraction, we again pick a random index from the remaining active portion...</li>
+        </ul>
+    </div>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/fisher-yates-data-structure/images/step-5.webp" alt="step 5">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item">... swap it with the last active position, decrement the <code class="simple-slider__code simple-slider__code--notability-fuchsia">LastIndex</code> and return the value that we have moved into the "<code class="simple-slider__code simple-slider__code--notability-red">already extracted</code>" tail.</li>
+        </ul>
+    </div>
+</div>
+
+<h2>My implementation: a random numbers bag</h2>
+
+<p>I wrapped the Fisher-Yates algorithm in a simple class that acts like a bag of numbers. You initialize it with a range (min and max), and it creates an internal array with all values in that range, initialized in order. The key difference from a traditional Fisher-Yates shuffle is that the array is <b>not shuffled upfront</b>—instead, shuffling happens incrementally each time you extract a value.</p>
+
+<p>Here's a simple example of how to use it:</p>
+
+<pre><code>using FisherYates;
+
+var bag = new FisherYatesBag(13, 27);
+var number = bag.GetNextRandom();
+Console.WriteLine(number); // e.g., "19"</code></pre>
+
+<p>The beauty of this implementation is that if you only need a few random numbers (like 3 out of 100), you get them in O(3) = <b>O(1) time</b> per extraction, not O(100).<br>The algorithm is based on Fisher-Yates but optimized for partial extractions.</p>
+
+<h2>Why I love this data structure</h2>
+
+<p>What makes this approach elegant is that it doesn't generate random numbers at all, and it doesn't shuffle the entire array upfront. Instead, it maintains an array of all possible values in order, and applies the Fisher-Yates principle incrementally: <u>each time you extract a value, it performs one swap operation to randomize the selection.</u></p>
+
+<p>This means:</p>
+
+<ul>
+    <li><b>No duplicate checking needed</b>: Once a value is extracted, it's physically removed from the available pool by swapping it to the "used" portion of the array</li>
+    <li><b>O(1) extraction time</b>: Each <code>GetNextRandom()</code> call takes constant time—just one random index selection and one swap operation</li>
+    <li><b>O(k) for k extractions</b>: If you need k random numbers, <code>ExtractKRandomNumbers(k)</code> takes O(k) time, not O(n)</li>
+    <li><b>True randomness</b>: The incremental Fisher-Yates approach guarantees uniform distribution, just like the classic algorithm</li>
+    <li><b>No wasted work</b>: If you only need 3 numbers from a range of 1000, you only perform 3 swap operations, not 1000</li>
+    <li><b>No wasted random number generations</b>: You're not generating random numbers that might be duplicates and need to be discarded</li>
+</ul>
+
+<p>The randomness comes from the incremental shuffling on each extraction, not from generating random numbers or shuffling everything upfront. This makes it perfect for scenarios where you need a small subset of unique random numbers from a larger range.</p>
+
+<h2>Limitations and solutions</h2>
+
+<p>Like any data structure, this one has its limitations. The most obvious one is memory: since we need to store an array with all possible values in the range, very large ranges can consume significant memory.</p>
+
+<p>For example, if you try to create a bag for numbers from 0 to 1,000,000, you'll need an array of one million integers. That's about 4 MB of memory, which might be acceptable depending on your use case, but if you're working with ranges in the billions, you'll run into memory issues.</p>
+
+<p>For such cases, you'd need a different approach. One solution could be to use a hash set to track used numbers and generate random numbers on the fly, accepting the potential for collisions and retries. Another approach might be to use a mathematical formula to generate unique random numbers without storing all possibilities, though this can be more complex and might have limitations depending on your specific requirements.</p>
+
+<p>For most practical purposes, though, the range-based bag works perfectly. If you're generating random numbers in a typical range (say, 0 to 10,000), the memory footprint is negligible.</p>
+
+<h2>Thread safety</h2>
+
+<p>It's important to note that my current implementation is <b>not thread-safe</b>. If multiple threads try to extract numbers from the same bag instance simultaneously, you'll get unpredictable behavior and potential data corruption.</p>
+
+<p>If you need thread-safe access, you have a few options:</p>
+
+<ul>
+    <li>Use a lock or mutex to synchronize access to the bag</li>
+    <li>Create separate bag instances for each thread</li>
+    <li>Implement thread-safe operations using atomic operations or concurrent collections</li>
+</ul>
+
+<p>For single-threaded scenarios, which cover most use cases, the current implementation is perfectly fine.</p>
+
+<h2>Use cases</h2>
+
+<p>This random numbers bag data structure is useful in several scenarios:</p>
+
+<h4>Password generation</h4>
+
+<p>You can use multiple bags to generate passwords with specific constraints. For example, a 12-character password with 2-4 special characters and 2-3 capital letters:</p>
+
+<pre><code>using FisherYates;
+/*
+* The password length is 18 characters.
+* The special characters are !@#$%^&*()-_=+[]{}<>?/.
+* The upper case letters are ABCDEFGHIJKLMNOPQRSTUVWXYZ.
+* The lower case letters are abcdefghijklmnopqrstuvwxyz.
+* The digits are 0123456789.
+* The password must contain 2-4 special characters, 2-3 upper case letters, and 1-3 digits.
+*/
+const int passwordLength = 18;
+const string specialChars = "!@#$%^&*()-_=+[]{}<>?/";
+const string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string lowerChars = "abcdefghijklmnopqrstuvwxyz";
+char?[] password = new char?[passwordLength];
+
+int numOfSpecials = Random.Shared.Next(2, 5);
+FisherYatesBag specialCharsBag = new(0, specialChars.Length - 1);
+IEnumerable<int> rndSpecialCharsIdxs = specialCharsBag.ExtractKRandomNumbers(numOfSpecials);
+
+int numOfUpperCaseLetters = Random.Shared.Next(2, 4);
+FisherYatesBag upperCaseLettersBag = new(0, upperChars.Length - 1);
+IEnumerable<int> rndUpperCaseLettersIdxs = upperCaseLettersBag.ExtractKRandomNumbers(numOfUpperCaseLetters);
+
+int numOfDigits = Random.Shared.Next(1, 4);
+FisherYatesBag digitsBag = new(0, 9);
+IEnumerable<int> rndDigits = digitsBag.ExtractKRandomNumbers(numOfDigits);
+
+FisherYatesBag positionsBag = new(0, passwordLength - 1);
+foreach (int idx in rndSpecialCharsIdxs) {
+    int pos = positionsBag.GetNextRandom();
+    password[pos] = specialChars[idx];
+}
+foreach (int idx in rndUpperCaseLettersIdxs) {
+    int pos = positionsBag.GetNextRandom();
+    password[pos] = upperChars[idx];
+}
+foreach (int digit in rndDigits) {
+    int pos = positionsBag.GetNextRandom();
+    password[pos] = (char)('0' + digit);
+}
+
+StringBuilder sb = new();
+FisherYatesBag lowerCaseLettersBag = new(0, lowerChars.Length - 1);
+foreach (char? c in password) {
+    if (c is not null) {
+        sb.Append(c);
+        continue;
+    }
+    int lowerCaseIdx = lowerCaseLettersBag.GetNextRandom();
+    sb.Append(lowerChars[lowerCaseIdx]);           
+    
+}
+
+return sb.ToString(); // e.g., "zqwrAM?Bfc!95gpd2h"</code></pre>
+
+<h4>Randomized testing</h4>
+
+<p>When running test suites, you might want to execute tests in a random order to catch dependencies between tests. The bag ensures each test runs exactly once, but in a random sequence.</p>
+
+<h4>Game development</h4>
+
+<p>In games, you might need to randomly select items, events, or positions without repetition. For example, randomly placing power-ups on a map, or selecting random quests from a pool.</p>
+
+<h4>Sampling without replacement</h4>
+
+<p>In data science or statistics, you might need to sample a subset of data points without replacement. The bag provides an efficient way to do this for integer-based sampling.</p>
+
+<h4>Shuffling playlists</h4>
+
+<p>If you're building a music player, you could use this to create a truly random shuffle of a playlist, ensuring each song plays exactly once before repeating.</p>
+
+<h2>Conclusion</h2>
+
+<p>The Fisher-Yates shuffle is a beautiful algorithm, and my implementation takes it one step further by applying it incrementally. By maintaining an array of possible values and shuffling only what you need on each extraction, <u>we get random extraction in O(1) time per value without the overhead of generating random numbers and checking for duplicates.</u></p>
+
+<p>This solves various scenarios efficiently: generating 3 random numbers without collisions takes O(3)~O(1) time, not O(n).</p>
+
+<p>It's not perfect for every scenario—very large ranges will consume too much memory, and it's not thread-safe out of the box—but for most practical purposes, especially when you need a small subset of unique random numbers from a larger range, it's an elegant and efficient solution.</p>
+
+<p>If you're interested in the implementation, you can check out the <a href="https://github.com/borgoo/fisher-yates-dotnet" target="_blank">repository on GitHub</a>. </p>
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+</body>
+</html>

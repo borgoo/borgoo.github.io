@@ -713,6 +713,7 @@ b {
 .simple-slider__code {
   font-family: var(--font-mono, "Fira Code", "Source Code Pro", Consolas, monospace);
   font-size: 0.95em;
+  color: #e3e0e0;
 }
 
 .simple-slider__code--notability-red {

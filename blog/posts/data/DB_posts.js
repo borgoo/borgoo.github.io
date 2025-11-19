@@ -40,6 +40,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2025-11-18",
     "updatedDate": "2025-11-18"
+  },
+  {
+    "id": "fisher-yates-data-structure",
+    "contentFile": "fisher-yates-data-structure.html",
+    "title":"Fisher-Yates data structure",
+    "subtitle": "My favourite random numbers bag data structure",
+    "abstract": "A C# implementation of the Fisher-Yates shuffle algorithm that creates a bag of random numbers, ensuring uniqueness without duplicate checking. Exploring the algorithm, its limitations, and practical use cases.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2025-11-19",
+    "updatedDate": "2025-11-19"
   }
 ]
 
