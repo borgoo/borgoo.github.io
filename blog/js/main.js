@@ -1,5 +1,6 @@
 import { loadPublishablePostsFromUrl } from './utils/postsLoader.js';
 import { formatDate, getRelativeTime, escapeHtml } from './utils/formatUtils.js';
+import { updateRelativeTimes } from './utils/relativeTimeUpdater.js';
 
 const POSTS_PER_PAGE = 10;
 
@@ -30,8 +31,8 @@ class BlogHomepage {
     const postsToShow = this.allPosts.slice(0, this.displayedPosts + this.postsPerPage);
     this.displayedPosts = postsToShow.length;
 
-    const postsHTML = postsToShow.map((post, index) => 
-      this.createPostPreview(post, index === 0)
+    const postsHTML = postsToShow.map(post => 
+      this.createPostPreview(post)
     ).join('');
 
     const hasMorePosts = this.displayedPosts < this.allPosts.length;
@@ -49,6 +50,9 @@ class BlogHomepage {
         loadMoreBtn.addEventListener('click', () => this.renderPosts());
       }
     }
+
+    // Update relative times after rendering posts
+    updateRelativeTimes();
   }
 
   createPostPreview(post) {
@@ -62,11 +66,11 @@ class BlogHomepage {
       <article class="posts__item">
         <div class="post__meta">
           <span class="post__meta-item">
-            <time datetime="${post.createdDate}">${createdDate} (${createdRelative})</time>
+            <time datetime="${post.createdDate}">${createdDate} (<span class="relative-time" data-date="${post.createdDate}">${createdRelative}</span>)</time>
           </span>
           ${showUpdated ? `
             <span class="post__meta-item">
-              <span>Updated: ${updatedDate} (${updatedRelative})</span>
+              <span>Updated: ${updatedDate} (<span class="relative-time" data-date="${post.updatedDate}">${updatedRelative}</span>)</span>
             </span>
           ` : ''}
           <span class="post__meta-item">

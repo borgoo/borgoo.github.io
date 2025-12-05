@@ -145,11 +145,11 @@ function generatePostHtml(post, config, draftsDir, paths, hasPreviewImage = fals
       <p class="post__subtitle">${escapeHtml(post.subtitle)}</p>
       <div class="post__meta">
         <span class="post__meta-item">
-          <time datetime="${post.createdDate}">${createdDate} (${createdRelative})</time>
+          <time datetime="${post.createdDate}">${createdDate} (<span class="relative-time" data-date="${post.createdDate}">${createdRelative}</span>)</time>
         </span>
         ${showUpdated ? `
           <span class="post__meta-item">
-            <span>Updated: ${updatedDate} (${updatedRelative})</span>
+            <span>Updated: ${updatedDate} (<span class="relative-time" data-date="${post.updatedDate}">${updatedRelative}</span>)</span>
           </span>
         ` : ''}
         <span class="post__meta-item">
@@ -217,6 +217,7 @@ ${generateFooter(config)}
   
   <script src="../${config.meta.themeScript}"></script>
   <script src="../${config.meta.simpleSliderScript}"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
 </body>
 </html>`;
 
