@@ -51,6 +51,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2025-11-19",
     "updatedDate": "2025-11-19"
+  },
+  {
+    "id": "high-school-knowledge-15-years-later",
+    "contentFile": "high-school-knowledge-15-years-later.html",
+    "title":"High school knowledge (15 years later)",
+    "subtitle": "Finally occured to apply some knowledge from my 'Probability and Statistics' course from high school",
+    "abstract": "Writing my 'Fisher-Yates data structure' C# code I was looking for a way to test the correct randomness of the algorithm. Was is that moment that a knowledge from high school finally occured to me: Chi-square test.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2025-12-04",
+    "updatedDate": "2025-12-04"
   }
 ]
 
