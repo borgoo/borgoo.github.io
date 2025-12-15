@@ -62,6 +62,18 @@
     "authorNickname": "@boborgo",
     "createdDate": "2025-12-04",
     "updatedDate": "2025-12-04"
+  },
+  {
+    "id": "affari-tuoi-pack-switch-problem",
+    "contentFile": "affari-tuoi-pack-switch-problem.html",
+    "title":"Affari tuoi pack switch problem",
+    "subtitle": "Affari tuoi pack switch vs Monty Hall problem",
+    "abstract": "A story about a problem that I encountered on TikTok and how I was able to learn something new and even teach something to someone else.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2025-12-15",
+    "updatedDate": "2025-12-15"
   }
+
 ]
 
