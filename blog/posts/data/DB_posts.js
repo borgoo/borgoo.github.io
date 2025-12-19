@@ -73,6 +73,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2025-12-15",
     "updatedDate": "2025-12-15"
+  },
+  {
+    "id": "black-jack-ai-part-0",
+    "contentFile": "black-jack-ai-part-0.html",
+    "title":"BlackJack AI - Part 0",
+    "subtitle": "My journey to create a BlackJack AI",
+    "abstract": "A JR-Mid .NET developer's journey into building his first AI agent project: creating a BlackJack AI. The intial goal is to learn how to triain a model using reinforcement learning.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2025-12-19",
+    "updatedDate": "2025-12-19"
   }
 
 ]

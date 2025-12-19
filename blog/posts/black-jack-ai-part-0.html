@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>BlackJack AI - Part 0 - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="BlackJack AI - Part 0 - alessandro's blog">
+  <meta name="description" content="A JR-Mid .NET developer&#039;s journey into building his first AI agent project: creating a BlackJack AI. The intial goal is to learn how to triain a model using reinforcement learning.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/black-jack-ai-part-0.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-0.html">
+  <meta property="og:title" content="BlackJack AI - Part 0 - alessandro's blog">
+  <meta property="og:description" content="A JR-Mid .NET developer&#039;s journey into building his first AI agent project: creating a BlackJack AI. The intial goal is to learn how to triain a model using reinforcement learning.">
+  <meta property="og:site_name" content="alessandro's blog">
+  
+  <meta property="article:published_time" content="2025-12-19">
+  <meta property="article:modified_time" content="2025-12-19">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-0.html">
+  <meta property="twitter:title" content="BlackJack AI - Part 0 - alessandro's blog">
+  <meta property="twitter:description" content="A JR-Mid .NET developer&#039;s journey into building his first AI agent project: creating a BlackJack AI. The intial goal is to learn how to triain a model using reinforcement learning.">
+  
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-black-jack-ai-part-0">
+      
+    <header class="post__header">
+      <h1>BlackJack AI - Part 0</h1>
+      <p class="post__subtitle">My journey to create a BlackJack AI</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2025-12-19">December 19, 2025 (<span class="relative-time" data-date="2025-12-19">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <p>AI is everywhere nowadays, and I'm falling behind.</p>
+
+<p>Since <b>model</b> and <b>reinforcement learning</b> are the buzzwords that come to my ears most often, I decided to start a project that involves both of them.</p>
+
+<p>Because I'm a little bit ashamed of myself and my knowledge in this area, I will apply the law of retaliation and share my entire journey with you.</p>
+
+<h2>My current knowledge</h2>
+
+<p>I'm starting this adventure with only these two concepts in my mind:</p>
+<ul>
+    <li>A <b>model</b> is "something" (a mathematical function) that can be trained (its parameters can be tuned) to "learn" how to do something (return a desired output given an input).</li>
+    <li><b>Reinforcement learning</b> is a technique based on rewards: the agent is rewarded for good actions and punished for bad actions.</li>
+</ul>
+
+<p>At this moment, it's not clear to me how the agent will be able to know that its job is to maximize the rewards from its actions.</p>
+
+<h2>Thinking</h2>
+
+<p>Given what I know so far, it seems clear that I need to create a task for the model that I know well, one that is easy to code and can be iterated on millions of times. Verifying the quality of the model's output given a specific input should also be an important factor.</p>
+
+<p>Finally, I would like to have fun advancing in this project. I'm already dreaming of having a nice UI to play with the model eventually, or at least to see the simulations in action... so is there something that I like... with clear rules and a clear goal?... maybe something.. like..</p>
+
+<blockquote>BLACKJACK!</blockquote>
+
+<p>Yeah, Blackjack should do!</p>
+
+<p>Now that I have my task, I can proceed with my favorite part: coding the game logic. A blackjack table where the model can play against the dealer.</p>
+
+<p>Some considerations before starting:</p>
+<ul>
+    <li>The game consists of N decks of cards dealt by the dealer to the player one card at a time.</li>
+    <li>The dealer should cut the deck at a certain point from the end (by rules) — for simplicity, this value will be fixed for now.</li>
+    <li>The model should be able to hit, stand, split, or double down its hand.</li>
+    <li>It should be heavily punished for losing all the bankroll (when a refill is needed).</li>
+    <li>Rewards should be 1.5 times higher for winning by Blackjack.</li>
+    <li>The model needs to manage the bankroll, count cards, and evaluate deck penetration.</li>
+    <li>No side bets or insurance for now.</li>
+</ul>
+
+<p>Mmh, some other considerations...</p>
+<ul>
+    <li>Should the model be able to play against the dealer multiple times when the bankroll runs out?</li>
+    <li>No fancy clean architecture for now... a simple console application will do.</li>
+</ul>
+
+<p>Enough talking... let's get dirty...</p>
+
+<h2>Part 0.1</h2>
+
+<p>Running down the rabbit hole (studying how to architect the game logic to be as AI-friendly as possible), I found that my approach based on <b>raw state</b> would take too much effort for an MVP (Deep Learning involved, as I understood it).</p>
+
+<p>A better first approach would be to work with <b>engineered features</b> that require much less reinforcement learning complexity to train the model.</p>
+
+<p>It's like focusing on the <a href="https://en.wikipedia.org/wiki/Blackjack#Basic_strategy" target="_blank"><b>Basic Strategy</b></a> without deviations and bankroll management for a rookie player!</p>
+
+<p>That allows me to easily identify the features that are important to the model:</p>
+
+<pre><code>public readonly record struct EngineeredFeatures(
+    int DealerFaceUpCard,
+    int PlayerHardTotal,
+    bool PlayerHasSoftAce,
+    bool PlayerHasPair
+);</code></pre>
+
+<p>I'm getting excited already 😁 Let's see if I can make it work...</p>
+
+
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>
