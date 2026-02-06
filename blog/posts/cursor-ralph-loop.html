@@ -206,54 +206,28 @@
 <p><i>from Cursor &gt; Dashboard &gt; Usage</i></p>
 
 <style>
+/* Scroll wrapper for this wide table */
 .table-scroll-wrapper {
   -webkit-overflow-scrolling: touch;
   overflow: auto;
   margin: 1em 0;
   max-height: 70vh;
 }
-.usage-stats-table { min-width: 1100px; border-collapse: collapse; }
-.usage-stats-table td { padding: 0.5em 0.75em; white-space: nowrap; }
+/* Layout-specific overrides for this table */
+.usage-stats-table { min-width: 1100px; }
+.usage-stats-table td { white-space: nowrap; }
+.usage-stats-table th:nth-child(n+5),
 .usage-stats-table td:nth-child(n+5) { text-align: right; }
-/* Alternating row colors – light theme */
-.usage-stats-table tbody tr:nth-child(odd) { background: rgba(0, 0, 0, 0.04); }
-.usage-stats-table tbody tr:nth-child(even) { background: transparent; }
-@media (prefers-color-scheme: dark) {
-  .usage-stats-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.05); }
-  .usage-stats-table tbody tr:nth-child(even) { background: transparent; }
-}
-/* Sticky header – light theme */
+/* Sticky header */
 .usage-stats-table thead th {
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: 0.5em 0.75em;
-  text-align: left;
-  white-space: nowrap;
-  background: #e8eaed;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
 }
-.usage-stats-table thead th:nth-child(n+5) { text-align: right; }
-@media (prefers-color-scheme: dark) {
-  .usage-stats-table thead th {
-    background: #2d3035;
-    border-bottom-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
-  }
-}
-/* Total row – light theme */
+/* Total row */
 .usage-stats-table tr.usage-stats-total td {
-  background: rgba(0, 0, 0, 0.08);
-  border-top: 2px solid rgba(0, 0, 0, 0.2);
-  padding: 0.65em 0.75em;
+  border-top: 2px solid var(--border-color);
   font-weight: bold;
-}
-@media (prefers-color-scheme: dark) {
-  .usage-stats-table tr.usage-stats-total td {
-    background: rgba(255, 255, 255, 0.1);
-    border-top-color: rgba(255, 255, 255, 0.25);
-  }
 }
 </style>
 <div class="table-scroll-wrapper">

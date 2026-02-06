@@ -741,6 +741,42 @@ b {
 }
 
 
+/* ── Tables ── */
+.post__content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9em;
+}
+
+.post__content table th {
+  padding: 0.6em 0.75em;
+  text-align: left;
+  white-space: nowrap;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 700;
+}
+
+.post__content table td {
+  padding: 0.5em 0.75em;
+  color: var(--text-primary);
+}
+
+.post__content table tbody tr:nth-child(odd) {
+  background: var(--hover-bg);
+}
+
+.post__content table tbody tr:nth-child(even) {
+  background: var(--bg-primary);
+}
+
+.post__content table tbody tr:hover {
+  background: var(--border-color);
+}
+
+
 @media (max-width: 768px) {
   body {
     font-size: 15px;
