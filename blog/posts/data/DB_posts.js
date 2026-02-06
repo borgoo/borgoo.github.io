@@ -84,6 +84,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2025-12-19",
     "updatedDate": "2025-12-19"
+  },
+  {
+    "id": "cursor-ralph-loop",
+    "contentFile": "cursor-ralph-loop.html",
+    "title": "Implementing a Ralph Loop with Cursor CLI",
+    "subtitle": "Building an autonomous agent loop and analyzing usage costs",
+    "abstract": "A guide to implementing a Ralph Loop using Cursor CLI (for Cursor Pro subscribers and above). Includes token usage analysis, pricing considerations, and real-world cost breakdowns to help you maximize your subscription benefits.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2026-02-06",
+    "updatedDate": "2026-02-06"
   }
 
 ]

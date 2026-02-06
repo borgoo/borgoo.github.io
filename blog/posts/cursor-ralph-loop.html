@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Implementing a Ralph Loop with Cursor CLI - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="Implementing a Ralph Loop with Cursor CLI - alessandro's blog">
+  <meta name="description" content="A guide to implementing a Ralph Loop using Cursor CLI (for Cursor Pro subscribers and above). Includes token usage analysis, pricing considerations, and real-world cost breakdowns to help you maximize your subscription benefits.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/cursor-ralph-loop.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/cursor-ralph-loop.html">
+  <meta property="og:title" content="Implementing a Ralph Loop with Cursor CLI - alessandro's blog">
+  <meta property="og:description" content="A guide to implementing a Ralph Loop using Cursor CLI (for Cursor Pro subscribers and above). Includes token usage analysis, pricing considerations, and real-world cost breakdowns to help you maximize your subscription benefits.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/cursor-ralph-loop/preview.webp">
+  <meta property="article:published_time" content="2026-02-06">
+  <meta property="article:modified_time" content="2026-02-06">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/cursor-ralph-loop.html">
+  <meta property="twitter:title" content="Implementing a Ralph Loop with Cursor CLI - alessandro's blog">
+  <meta property="twitter:description" content="A guide to implementing a Ralph Loop using Cursor CLI (for Cursor Pro subscribers and above). Includes token usage analysis, pricing considerations, and real-world cost breakdowns to help you maximize your subscription benefits.">
+  <meta property="twitter:image" content="https://borgoo.github.io/blog/posts/assets/cursor-ralph-loop/preview.webp">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-cursor-ralph-loop">
+      
+    <header class="post__header">
+      <h1>Implementing a Ralph Loop with Cursor CLI</h1>
+      <p class="post__subtitle">Building an autonomous agent loop and analyzing usage costs</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2026-02-06">February 6, 2026 (<span class="relative-time" data-date="2026-02-06">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <blockquote>duck, duck, duck, duck, duck, duck ...</blockquote>
+
+<img src="assets/cursor-ralph-loop/images/1.webp" alt="Ralph Wiggum duck meme">
+
+<p>Some weeks ago I encountered the famous <a href="https://ghuntley.com/ralph/" target="_blank">Geoffrey Huntley blog post: "Ralph Wiggum as a software engineer"</a> and, like many others, I've been fascinated by the concept. To me it really seems just a matter of time (and obvious) that something like Ralph Loop should come around; what I didn't expect was that a solution as simple as that could achieve results that good.</p>
+
+<p>Some days passed... until YouTube videos where people claimed to be able to create MVPs of entire projects with this method started to pop up.</p>
+<p>What finally convinced me was a friend of mine who, during a phone call, told me how big a part of his job (as a software developer for a big company) was actually solvable with this method.</p>
+
+<p>I took that as a sign and I noted in my todo list to try to implement my own Ralph Loop.</p>
+
+<h2 id="first-approach">First approach</h2>
+<p>After re-reading the <a href="https://ghuntley.com/ralph/" target="_blank">Geoffrey post</a> I started surfing the internet for more information and almost immediately I encountered the <a href="https://www.youtube.com/watch?v=_IK18goX4X8" target="_blank">Pocock video</a> regarding the subject.</p>
+
+<p>I found it very illuminating, so I decided to take that as my starting point.</p>
+
+<p>First things first: the most common implementations of Ralph Loops were based on Claude Code, but I didn't have an active plan back then. I had a Cursor plan though. So I started looking for a solution that could be implemented with that subscription to avoid activating multiple subscriptions each month (Netflix, Disney+... docet).</p>
+
+<p>I found a Reddit topic with <a href="https://github.com/agrimsingh/ralph-wiggum-cursor" target="_blank">this solution</a> posted. I tried to make it work on Windows, but I failed.</p>
+
+<p>The time to act had come: <b>Let's code!</b></p>
+
+<h2 id="ralph-loop-cursor-cli">My implementation of Ralph Loop based on Cursor CLI</h2>
+<p>The solution I came up with is based on the already cited <a href="https://www.youtube.com/watch?v=_IK18goX4X8" target="_blank">Pocock video</a>.</p>
+
+<p>I tried to refine it and make it work with the <a href="https://cursor.com/docs/cli/overview" target="_blank">Cursor CLI agent</a>.</p>
+
+<h3 id="how-it-works">How it works</h3>
+
+<p>The Ralph Loop iterates N times, calling a new Cursor CLI instance (so a new context window) on each iteration, passing to the agent a prompt engineered to:</p>
+<ul>
+    <li>check the current project status (via a <code>progress.txt</code> file updated on each iteration and the git history of the project)</li>
+    <li>search the next priority feature (ONLY ONE and not implemented yet) to develop from the product requirements document (e.g. <code>PRD.json</code> file)</li>
+    <li>test the new implemented feature and run the entire suite of tests of the project</li>
+    <li>if all is ok, proceed to mark as 'Done' the implemented feature in the product requirements document, update the <code>progress.txt</code> and commit the changes using git</li>
+    <li>terminate the loop if all the features have been implemented correctly (<code>COMPLETION_MARKER_ID</code> in code base)</li>
+</ul>
+
+<p>The loop is set to terminate after N iterations in case the project progress enters a loop (e.g. agents in different iterations loop on implementations and updates on the same project feature, or the path derails from the PRD for any other reason). It's just a safety choice to limit the number of agents to run (and not run a <code>while(true)</code> until the entire project is done).</p>
+<p>A reasonable choice could be to set N to the number of features written in the <code>PRD.json</code> file.</p>
+
+<p>The agent (Cursor CLI) invoked in the loop is run with multiple parameters which:</p>
+<ul>
+    <li><code>--force</code> parameter that allows the agent to run all kinds of commands</li>
+    <li><code>--workspace</code> parameter to set the project working directory</li>
+</ul>
+<p>(Run <code>agent --help</code> in terminal for a deeper understanding of the parameters.)</p>
+
+<p>All the mentioned parameters can be configured during the <code>ralph.sh</code> launch (<code>./ralph.sh --help</code> can be helpful).</p>
+
+<p>The full repo is here: <a href="https://github.com/borgoo/cursor-ralph-loop" target="_blank">cursor-ralph-loop</a>.</p>
+
+<h3 id="to-keep-in-mind">To keep in mind</h3>
+
+<p>Ralph Loop works best with small, very deterministic tasks. Your main concern MUST be to write well-written and exhaustive features to implement, following the given <code>PRD.json</code> structure.</p>
+
+<p>Small tasks will help to avoid context window rot/dumb zone since all the agents will start with a fresh context window each time.</p>
+
+<p>The agents will choose the feature priority by themselves and not necessarily in the given order in the <code>PRD.json</code>.</p>
+
+<p>The TESTS are way more important than the feature specifics: the agents will tend to consider features correctly implemented (even if they fail) unless well-written test requirements cover the feature. I've found it particularly helpful to write integration tests (more than unit tests) in this sense (thanks to this <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents#feature-list" target="_blank">Anthropic post</a>).</p>
+
+<p>For a very small project I've found it enough to specify the project structure/guidelines in the <code>requirements.md</code> file, leaving the agent plenty of room for manoeuvre; a good way to handle this may be to include the specifics into the <code>PRD.json</code> file and be more pedantic about it.</p>
+
+<h2 id="practical-use-case">A practical use case (Minimal Book Tracker)</h2>
+<p>Let's talk now about a realistic (extremely simple) use case and try to collect some data.</p>
+
+<p>I chose to stress the Ralph Loop by implementing a very simple CLI CRUD program written in C. The domain is something like a library: the desired result allows the user to do operations such as viewing the list of books, inserting/deleting a book, and managing persistence.</p>
+
+<p>You can find the example files <a href="https://github.com/borgoo/cursor-ralph-loop" target="_blank">here</a> as reference.</p>
+
+<h3 id="how-to-windows">How to - Windows</h3>
+<p>The general approach is to create a "sandbox" using Docker where our AI agents can operate freely without the risk of (in case of hallucinations or something) accessing unwanted files/resources.</p>
+
+<p>To do so:</p>
+
+<p>Install <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a></p>
+
+<p>Run Docker Desktop via the GUI or, in a Windows terminal, type:</p>
+<pre><code>docker desktop start</code></pre>
+
+<p>Download the latest Ubuntu Docker image:</p>
+<pre><code>docker pull ubuntu:latest</code></pre>
+
+<p>Make the root directory of our project. This will be our workspace and the Ralph Loop (Cursor CLI agents) will only see files in this scope. In a Windows terminal type:</p>
+<pre><code>mkdir C:\Projects\docker-ralph-workspace\minimal-book-tracker && cd C:\Projects\docker-ralph-workspace\minimal-book-tracker</code></pre>
+
+<p>Download the repo from git containing the code and delete the .git versioning internal repo: this code is meant to live as a <b>subdirectory of your project</b>, not as the project itself.</p>
+<pre><code>git clone --depth 1 https://github.com/borgoo/cursor-ralph-loop.git && rmdir /s /q cursor-ralph-loop\.git</code></pre>
+
+<p><b>IMPORTANT NOTE</b></p>
+
+<p>The cloned repo is already set up to allow the creation of the <i>Minimal Book Tracker</i> project. To use it for your own project you need to change the content of the support files before proceeding; especially the <i>Dockerfile</i>. The downloaded one is set up for the creation of an Ubuntu image with the bare minimum tools necessary for the run of the Ralph Loop and the creation of a C23 coded project. Take a closer look at the <i>#Dependency installation</i> section in it and update it based on your specific requirements (e.g. some Python libraries...). Keep in mind that <b>git</b> and <b>Cursor agent CLI</b> are mandatory for Ralph Loop to work.</p>
+
+<p>Now build a Docker image based on the <i>Dockerfile</i> specs:</p>
+<pre><code>docker build -t minimal-book-tracker-sandbox-image .</code></pre>
+
+<p>Make the Docker container based on the created image and run it, tagging the root as the workspace directory:</p>
+<pre><code>docker run -it --name minimal-book-tracker-sandbox-container -v C:\Projects\docker-ralph-workspace\minimal-book-tracker:/workspace minimal-book-tracker-sandbox-image</code></pre>
+
+<p><b>⚠️ CRUCIAL</b></p>
+
+<p>After the container is built, a bash shell (Ubuntu terminal) starts (because of the Dockerfile configuration). From inside this terminal type <code>agent</code> and press Enter. This runs Cursor CLI as agent and, on first access, a login will be required. This step is mandatory to authorize the Ralph Loop to use the agent command in the code itself.</p>
+<p>After authenticating in the browser you can close the agent interface in the terminal (Ctrl+C or exit).</p>
+
+<p>Now that the container is created you can run multiple instances with the command (from Windows terminal):</p>
+<pre><code>docker exec -it minimal-book-tracker-sandbox-container bash</code></pre>
+<p><i>Note:</i> It can be helpful to run commands like <code>tail -f thinking.tmp</code> while the Ralph Loop is running (in another terminal) to monitor the agent's status in real time.</p>
+
+<p>From now on it's just a matter of defining the content of the features in the <code>PRD.json</code> file in the most <i>deterministic</i>, <i>test-driven</i> way possible (integration tests especially). Then adjust the <code>requirements.md</code> with some high-level shared specs and that's it.</p>
+
+<p>The Ralph Loop can be run from the container (Bash terminal) with, e.g.:</p>
+<pre><code>./ralph.sh requirements.md backlogs/PRD.json 30</code></pre>
+
+<h2 id="stats-minimal-book-tracker">Some stats about the Minimal Book Tracker development with the Ralph Loop</h2>
+
+<p>Before starting this use case it took me something like a day of work to refine the agent prompt: making it fit a C project, handling one feature per iteration, and making sure that a feature is considered complete only when all tests still pass after the implementation. So I think this time should be accounted for when considering switching technologies or testing approaches.</p>
+
+<p><b>Setup prompt specifically for the project</b>: 8h</p>
+
+<p>Then I started collecting high-level features by questioning another LLM about the project, then specifying the details and acceptance criteria for each identified feature. One or more unit tests were specified for each feature, and finally some cumulative integration tests were added to the list (in <code>PRD.json</code>). I also spent a little time writing the <code>requirements.md</code> file.</p>
+
+<p><b>Populating <code>PRD.json</code> and <code>requirements.md</code> files</b>: 1-2h</p>
+
+<p>Given the simplicity of the project and to save tokens, the chosen model for the task was <b>sonnet-4.5</b> on a <b>Cursor PRO plan of $20/month</b>.</p>
+
+<p>The Ralph Loop was run multiple times with small iteration limits (10-ish against the ~25 features in the <code>PRD.json</code>) to monitor the progress and analyze the written code. I took some breaks during the process as well. Anyway...</p>
+
+<p><b>Ralph Loop working time</b>: 1h 30'</p>
+
+<p>In the end, what everyone was waiting for!</p>
+
+<p><i>from Cursor &gt; Dashboard &gt; Usage</i></p>
+
+<style>
+.table-scroll-wrapper {
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+  margin: 1em 0;
+  max-height: 70vh;
+}
+.usage-stats-table { min-width: 1100px; border-collapse: collapse; }
+.usage-stats-table td { padding: 0.5em 0.75em; white-space: nowrap; }
+.usage-stats-table td:nth-child(n+5) { text-align: right; }
+/* Alternating row colors – light theme */
+.usage-stats-table tbody tr:nth-child(odd) { background: rgba(0, 0, 0, 0.04); }
+.usage-stats-table tbody tr:nth-child(even) { background: transparent; }
+@media (prefers-color-scheme: dark) {
+  .usage-stats-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.05); }
+  .usage-stats-table tbody tr:nth-child(even) { background: transparent; }
+}
+/* Sticky header – light theme */
+.usage-stats-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0.5em 0.75em;
+  text-align: left;
+  white-space: nowrap;
+  background: #e8eaed;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.usage-stats-table thead th:nth-child(n+5) { text-align: right; }
+@media (prefers-color-scheme: dark) {
+  .usage-stats-table thead th {
+    background: #2d3035;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+/* Total row – light theme */
+.usage-stats-table tr.usage-stats-total td {
+  background: rgba(0, 0, 0, 0.08);
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+  padding: 0.65em 0.75em;
+  font-weight: bold;
+}
+@media (prefers-color-scheme: dark) {
+  .usage-stats-table tr.usage-stats-total td {
+    background: rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(255, 255, 255, 0.25);
+  }
+}
+</style>
+<div class="table-scroll-wrapper">
+<table class="usage-stats-table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Kind</th>
+        <th>Model</th>
+        <th>Max Mode</th>
+        <th>Input (w/ Cache Write)</th>
+        <th>Input (w/o Cache Write)</th>
+        <th>Cache Read</th>
+        <th>Output Tokens</th>
+        <th>Total Tokens</th>
+        <th>Cost ($)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td>2026-02-04T11:27:45.187Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>24928</td><td>21</td><td>467313</td><td>2952</td><td>495214</td><td>0.28</td></tr>
+    <tr><td>2026-02-04T11:11:47.917Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>33404</td><td>31</td><td>640937</td><td>4137</td><td>678509</td><td>0.38</td></tr>
+    <tr><td>2026-02-04T10:57:15.649Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>35699</td><td>36</td><td>650930</td><td>11629</td><td>698294</td><td>0.5</td></tr>
+    <tr><td>2026-02-04T10:55:25.143Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>30071</td><td>41</td><td>582917</td><td>4710</td><td>617739</td><td>0.36</td></tr>
+    <tr><td>2026-02-04T10:52:07.689Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>43858</td><td>34</td><td>1099927</td><td>11126</td><td>1154945</td><td>0.66</td></tr>
+    <tr><td>2026-02-04T10:48:13.528Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>33762</td><td>36</td><td>859180</td><td>6426</td><td>899404</td><td>0.48</td></tr>
+    <tr><td>2026-02-04T10:46:58.937Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>20833</td><td>28</td><td>350639</td><td>2482</td><td>373982</td><td>0.22</td></tr>
+    <tr><td>2026-02-04T10:44:26.754Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>32956</td><td>42</td><td>695429</td><td>7981</td><td>736408</td><td>0.45</td></tr>
+    <tr><td>2026-02-04T10:43:17.426Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>15623</td><td>30</td><td>342786</td><td>2728</td><td>361167</td><td>0.2</td></tr>
+    <tr><td>2026-02-04T10:42:15.272Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>19697</td><td>29</td><td>313636</td><td>2296</td><td>335658</td><td>0.2</td></tr>
+    <tr><td>2026-02-04T10:39:00.374Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>40027</td><td>37</td><td>1075435</td><td>9550</td><td>1125049</td><td>0.62</td></tr>
+    <tr><td>2026-02-04T10:37:35.682Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>21187</td><td>29</td><td>327533</td><td>3616</td><td>352365</td><td>0.23</td></tr>
+    <tr><td>2026-02-04T10:33:25.607Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>38135</td><td>41</td><td>1419953</td><td>13639</td><td>1471768</td><td>0.77</td></tr>
+    <tr><td>2026-02-04T10:32:10.461Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>22043</td><td>30</td><td>346848</td><td>3043</td><td>371964</td><td>0.23</td></tr>
+    <tr><td>2026-02-04T10:30:13.197Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>23439</td><td>40</td><td>429674</td><td>6152</td><td>459305</td><td>0.31</td></tr>
+    <tr><td>2026-02-04T10:20:05.611Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>29835</td><td>60</td><td>882619</td><td>6997</td><td>919511</td><td>0.48</td></tr>
+    <tr><td>2026-02-04T10:18:31.973Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>20652</td><td>35</td><td>423661</td><td>4338</td><td>448686</td><td>0.27</td></tr>
+    <tr><td>2026-02-04T10:16:35.614Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>25726</td><td>55</td><td>456568</td><td>7029</td><td>489378</td><td>0.34</td></tr>
+    <tr><td>2026-02-04T10:14:50.099Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>20587</td><td>29</td><td>448328</td><td>5427</td><td>474371</td><td>0.29</td></tr>
+    <tr><td>2026-02-04T10:12:36.079Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>27857</td><td>41</td><td>566076</td><td>8278</td><td>602252</td><td>0.4</td></tr>
+    <tr><td>2026-02-04T10:10:29.688Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>18632</td><td>33</td><td>419441</td><td>6790</td><td>444896</td><td>0.3</td></tr>
+    <tr><td>2026-02-04T10:08:48.222Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>19530</td><td>35</td><td>422209</td><td>4911</td><td>446685</td><td>0.27</td></tr>
+    <tr><td>2026-02-04T10:07:01.966Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>15145</td><td>34</td><td>338888</td><td>4587</td><td>358654</td><td>0.23</td></tr>
+    <tr><td>2026-02-04T10:05:19.487Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>18147</td><td>38</td><td>404598</td><td>4728</td><td>427511</td><td>0.26</td></tr>
+    <tr><td>2026-02-04T10:03:19.109Z</td><td>Included</td><td>claude-4.5-sonnet</td><td>No</td><td>15345</td><td>45</td><td>535682</td><td>6021</td><td>557093</td><td>0.31</td></tr>
+    <tr class="usage-stats-total"><td></td><td></td><td></td><td>Total</td><td>647,118</td><td>910</td><td>14,501,207</td><td>151,573</td><td>15,300,808</td><td>9.04</td></tr>
+    </tbody>
+</table>
+</div>
+
+<p><b>Total processed tokens</b>:<br>Input (w/ Cache Write) + Input (w/o Cache Write) + Cache Read + Output Tokens = ~15.3 M</p>
+
+<p><b>Total of tokens that I paid for</b>:<br>Input (w/ Cache Write) + Input (w/o Cache Write) + Output Tokens = 799601 = ~800 K</p>
+
+<p><b>Total cost of the Ralph Loop</b>:<br>$9.04 (all covered by the Pro $20/month subscription plan—no additional costs billed)</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Ralph Loop certainly is something.</p>
+
+<p>Considering that the price is something like $6/h to do the job (~$9.04 for 1.5h), one can't ignore the fact that a mid-level programmer requires (minimum in Italy) around $50/h to do the same job.</p>
+
+<p>Too many other considerations must be taken into account; for example: the code quality, the presence of bugs and bad practices during the automatic development, the possibility of changing the code during the process due to new specs from the eventual client, the cost of trying to guide the AI on the right path when it hallucinates, and so on... BUT...</p>
+
+<p>the fact that for this simple project the Ralph Loop guaranteed fully working code (no edits were needed on what the AI had already written), the possibility of using way more powerful models, the low cost of giving it a try—both economically and in terms of supervision; in fact, if we consider that gathering <i>PRD</i> specs is already part of a developer's job, the "give it a try" cost can be reduced to formatting the features/tests in the <code>PRD.json</code> format; the wide margin for improving the prompt and the ability to write the features in the <code>PRD.json</code> file...</p>
+
+<p>all of this makes me think that, in the end,</p>
+<p>I was able to produce a working MVP of a project written in a language (C) that I hadn't touched since high school graduation in just (~) a day of work.</p>
+
+<br><br>
+<i>Some screenshots of the Minimal Book Tracker CLI result</i>
+<div class="simple-slider" data-simple-slider>
+    <div data-simple-slider-slide>
+        <img src="assets/cursor-ralph-loop/images/2.webp" />
+    </div>
+    <div data-simple-slider-slide>
+        <img src="assets/cursor-ralph-loop/images/3.webp" />
+    </div>
+    <div data-simple-slider-slide>
+        <img src="assets/cursor-ralph-loop/images/4.webp" />
+    </div>
+</div>
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>
