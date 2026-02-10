@@ -22,7 +22,7 @@
   <meta property="og:site_name" content="alessandro's blog">
   <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/cursor-ralph-loop/preview.webp">
   <meta property="article:published_time" content="2026-02-06">
-  <meta property="article:modified_time" content="2026-02-06">
+  <meta property="article:modified_time" content="2026-02-10">
   <meta property="article:author" content="Alessandro Borgonovo">
   
   <!-- Twitter -->
@@ -62,8 +62,12 @@
       <p class="post__subtitle">Building an autonomous agent loop and analyzing usage costs</p>
       <div class="post__meta">
         <span class="post__meta-item">
-          <time datetime="2026-02-06">February 6, 2026 (<span class="relative-time" data-date="2026-02-06">today</span>)</time>
+          <time datetime="2026-02-06">February 6, 2026 (<span class="relative-time" data-date="2026-02-06">4 days ago</span>)</time>
         </span>
+        
+          <span class="post__meta-item">
+            <span>Updated: February 10, 2026 (<span class="relative-time" data-date="2026-02-10">today</span>)</span>
+          </span>
         
         <span class="post__meta-item">
           <span>@boborgo</span>
@@ -178,7 +182,6 @@
 
 <p>Now that the container is created you can run multiple instances with the command (from Windows terminal):</p>
 <pre><code>docker exec -it minimal-book-tracker-sandbox-container bash</code></pre>
-<p><i>Note:</i> It can be helpful to run commands like <code>tail -f thinking.tmp</code> while the Ralph Loop is running (in another terminal) to monitor the agent's status in real time.</p>
 
 <p>From now on it's just a matter of defining the content of the features in the <code>PRD.json</code> file in the most <i>deterministic</i>, <i>test-driven</i> way possible (integration tests especially). Then adjust the <code>requirements.md</code> with some high-level shared specs and that's it.</p>
 
@@ -297,6 +300,10 @@
 <p>I was able to produce a working MVP of a project written in a language (C) that I hadn't touched since high school graduation in just (~) a day of work.</p>
 
 <br><br>
+
+<i>Update: <a href="https://www.anthropic.com/engineering/building-c-compiler" target="_blank">HERE</a> is the latest update from Anthropic, showing how they have scaled and evolved the original Ralph Loop concept.</i>
+
+<br><br>
 <i>Some screenshots of the Minimal Book Tracker CLI result</i>
 <div class="simple-slider" data-simple-slider>
     <div data-simple-slider-slide>
@@ -309,6 +316,7 @@
         <img src="assets/cursor-ralph-loop/images/4.webp" />
     </div>
 </div>
+
     </div>
     <div class="post__footer">
       <a href=".././index.html" class="go-back"> Go back</a>
