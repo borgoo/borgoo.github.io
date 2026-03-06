@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>BlackJack AI - Part 1 - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="BlackJack AI - Part 1 - alessandro's blog">
+  <meta name="description" content="A description of how a JR-Mid .NET developer approaches the reinforcement learning for the first time with the development of a BlackJack AI. Starting from Part 0 considerations, the project evolved into a Q-Learning simulation approach leading to the first implementation of a working BlackJack AI.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/black-jack-ai-part-1.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-1.html">
+  <meta property="og:title" content="BlackJack AI - Part 1 - alessandro's blog">
+  <meta property="og:description" content="A description of how a JR-Mid .NET developer approaches the reinforcement learning for the first time with the development of a BlackJack AI. Starting from Part 0 considerations, the project evolved into a Q-Learning simulation approach leading to the first implementation of a working BlackJack AI.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/black-jack-ai-part-1/preview.webp">
+  <meta property="article:published_time" content="2026-03-06">
+  <meta property="article:modified_time" content="2026-03-06">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-1.html">
+  <meta property="twitter:title" content="BlackJack AI - Part 1 - alessandro's blog">
+  <meta property="twitter:description" content="A description of how a JR-Mid .NET developer approaches the reinforcement learning for the first time with the development of a BlackJack AI. Starting from Part 0 considerations, the project evolved into a Q-Learning simulation approach leading to the first implementation of a working BlackJack AI.">
+  <meta property="twitter:image" content="https://borgoo.github.io/blog/posts/assets/black-jack-ai-part-1/preview.webp">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-black-jack-ai-part-1">
+      
+    <header class="post__header">
+      <h1>BlackJack AI - Part 1</h1>
+      <p class="post__subtitle">To succeed I had to reinforcement learn myself on machine learning concepts</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2026-03-06">March 6, 2026 (<span class="relative-time" data-date="2026-03-06">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <p>So much time has passed and so many things have happened since my last post.</p>
+
+<p>But I still wanted to create my first AI agent and see it in action.</p>
+
+<p>So let's get back to the basics: we left off with me realizing that reaching the basic strategy (and ignoring bankroll management for now) should be the first goal of this project.</p>
+
+<p>The project felt a little overwhelming at first, so I started from my comfort zone: programming the game logic.</p>
+
+<img src="assets/black-jack-ai-part-1/images/1.webp" width="200px" />
+
+<h2 id="the-game-logic-blackjack-ai-core">The game logic (<i>BlackJack.AI.Core</i>)</h2>
+
+<p>First of all, I created a library project to add to my solution: a <i>Core</i> library containing all the tools and models shared across the entire solution.</p>
+
+<p>How a player's hand (and status) is modeled, the possible player actions, how a shoe (set of decks) behaves, the table (game) configurations… basically everything needed to describe the blackjack simulation lives here.</p>
+
+<p>The most important choices I made at this stage were:</p>
+<ul>
+  <li>how to implement the game (table) state</li>
+  <li>how to implement the rules of the game</li>
+</ul>
+
+<h3 id="game-state">GameState</h3>
+
+<p>An immutable record class containing information about:</p>
+<ul>
+  <li>player hands status</li>
+  <li>dealer hand status</li>
+  <li>the current game phase (PlayerTurn, DealerTurn...)</li>
+</ul>
+
+<p>I use it to share the game state between different components of the solution, especially to orchestrate the game flow and the actions of different players.</p>
+
+<p>The choice of an immutable record was meant to ensure the game state can be shared without the risk of race conditions (thread safety).</p>
+
+<p>⚠️ <code>GameState</code> is meant to represent a player's hand status vs the dealer hand status. <code>PlayerHands</code> is a list of hands because the game state must handle split actions starting from the initial hand.</p>
+
+<pre><code>public required ImmutableList&lt;HandState&gt; PlayerHands { get; init; }  // GameResult must be None until the end of the game
+public required Hand DealerHand { get; init; }
+public required GamePhase Phase { get; init; } // Phase: Start with PlayerTurn -&gt; DealerTurn -&gt; Finished</code></pre>
+
+<h3 id="blackjack-rules">BlackjackRules</h3>
+
+<p>An idempotent class containing the rules of the game:</p>
+<ul>
+  <li>hand status (soft/hard, pair, blackjack, bust) getters</li>
+  <li>dealer actions logic</li>
+  <li>hand score computation</li>
+  <li>player hand vs dealer hand comparison</li>
+  <li>…</li>
+</ul>
+
+<p>All of them (and more) live here and are used to drive the simulation without editing the game state (see <a href="#game-state"><code>GameState</code></a> above).</p>
+
+<h2 id="main-consumer-of-the-core-library-blackjack-ai-gameengine">Main consumer of the Core library (<i>BlackJack.AI.GameEngine</i>)</h2>
+
+<p>This library contains the class that applies the game rules (<code>BlackjackRules</code>) on the game context (<code>GameState</code>) to simulate the game flow and the actions of the player and the dealer.</p>
+
+<p>⚠️ Remembering that <code>GameState</code> represents one (splittable) starting hand vs the dealer hand: the <b>SPLIT</b> action operates by overriding the split hand with the first child hand and then adding a new hand (second child) to the hands list.</p>
+
+<p><i>eg.</i></p>
+<img src="assets/black-jack-ai-part-1/images/2.webp" />
+
+<br><br>
+<p>At this point I wanted to be sure I had implemented a solid foundation for the game logic, so I could start working on the AI agent without worrying about the basics.</p>
+
+<h2 id="tests-tests-blackjack-ai">Tests (<i>Tests.BlackJack.AI</i>)</h2>
+
+<p>Using NUnit and the AAA approach, I unit-tested the code around the core (mostly the shoe) and specifically the <code>BlackjackRules</code> and <code>GameEngine</code> classes.</p>
+
+<p>Now that I was confident the game logic was solid, I started working on a CLI that could let me (and the agent in the future) interact with the game.</p>
+
+<h2 id="cli-blackjack-ai-cli">CLI (<i>BlackJack.AI.CLI</i>)</h2>
+
+<p>Since the design of the core logic was acceptable, the CLI was fairly straightforward to implement.</p>
+
+<p>I started thinking about launch parameters and quickly landed on the main couple:</p>
+<ul>
+  <li>a JSON config file to set game parameters (number of decks, reshuffling, allowed actions at the table...)</li>
+  <li>a parameter to choose whether the player is human (interactive) or an agent (automatic, following a given strategy)</li>
+</ul>
+
+<p>The parameters handler came first, then I implemented <code>GameOrchestrator.cs</code> to coordinate player actions via the game engine on the game state. The orchestrator handles one player starting hand at a time (splittable is ok, but only one starting hand at a time) vs the dealer hand.</p>
+
+<p>As a view requirement, I added some fancy ASCII art and an interactive console game state to make it more engaging.</p>
+
+<p>Wanting to make a CLI set of games reproducible (and eventually testable), I added a <code>--seed</code> / <code>-s</code> parameter to set a deterministic seed for the game engine (and the shoe, and all the random-based choices during execution).</p>
+
+<p>Only later I managed to add runtime statistics and a <code>--silent</code> output mode (especially for automated players playing millions of hands).</p>
+
+<img src="assets/black-jack-ai-part-1/images/3.webp" />
+
+<h2 id="players-blackjack-ai-players">Players (<i>BlackJack.AI.Players</i>)</h2>
+
+<p>While coding the CLI I ended up with an abstraction for "a player" acting on the game: the only relevant information the orchestrator needs from a player is which action to pick from the available actions for a given game state.</p>
+
+<p>With that in mind, I grouped here the possible players that can interact with the CLI:</p>
+<ul>
+  <li>a human player (interactive via stdin/stdout)</li>
+  <li>a random player (a dumb agent that chooses actions randomly)</li>
+  <li>an agent player (a more advanced agent that follows a given strategy from some sort of strategy provider; at this point I still wasn't sure what that provider should be)</li>
+  <li>possibly more in the future...</li>
+</ul>
+
+<img src="assets/black-jack-ai-part-1/images/4.webp" />
+<p>
+  <i>Here is an example of a <code>--human</code> playing the game on the CLI; we can see 4 main sections:</i>
+  <ul>
+    <li><span class="simple-slider__code simple-slider__code--notability-yellow">◼</span> Summary - of the game rules and the played games statistics</li>
+    <li><span class="simple-slider__code simple-slider__code--notability-fuchsia">◼</span> Player hands state/interaction - where the player choose which action to take from the one available</li>
+    <li><span class="simple-slider__code simple-slider__code--notability-sky">◼</span> Request to stop the game - available only when <i>Hands to play: infinite</i> is selected</li>
+    <li><span class="simple-slider__code simple-slider__code--notability-red">◼</span> Final recap of the player hands vs dealer hand - helpful when splitted / multiple hands have been played </li>
+  </ul>
+</p>
+
+<h2 id="part-1-5-time-to-study-reinforcement-learning">Part 1.5 - Time to study Reinforcement Learning</h2>
+
+<p>At this point the playfield seemed to be set: the game logic is solid, the CLI is working… what am I missing? Well, just the whole point of the project: the AI agent.</p>
+
+<p>I started looking online for resources about <b>reinforcement learning</b> (<i>RL</i> from now on) and found a lot of material about the subject.</p>
+
+<p>I started from the <a href="https://en.wikipedia.org/wiki/Reinforcement_learning" target="_blank">Wikipedia page</a> and moved on to university papers. After a deep dive into <i>Markov decision processes</i> and some heavy mathematical notation, I pulled out a few key points:</p>
+
+<ul>
+  <li><i>“Reinforcement learning problems involve learning what to do—how to map situations to actions—so as to maximize a numerical reward signal...<br>...The formulation is intended to include just these three aspects—sensation, action, and goal—in their simplest possible forms without trivializing any of them.”</i><br>
+    <i>Ref:</i> <a href="https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf" target="_blank">Sutton &amp; Barto (Stanford hosted PDF)</a></li>
+  <li>Reinforcement learning is not <b>supervised learning</b> (learning from a labeled training set), and it's not <b>unsupervised learning</b> either (finding patterns in unlabeled data).</li>
+  <li>The goal of RL is to maximize its reward signal.</li>
+  <li>Reinforcement learning is a specific type of <b>machine learning</b> (<i>ML</i> from now on).</li>
+  <li>ML is a subcategory of artificial intelligence that learns from data to improve performance on a specific task (no deterministic if/else at the end).</li>
+  <li>A <b>policy</b> is a function that maps situations to actions: it defines how the agent behaves in a given situation.</li>
+  <li>The <b>value function</b> specifies what is good to do in the long term (future rewards), differently from the reward signal, which is about what is good in the immediate sense.</li>
+  <li>Rewards differ from values: rewards are given by the environment; values are re-estimated by the agent on each episode.</li>
+  <li>An <b>episode</b> is a complete sequence of interactions between the agent and the environment.</li>
+  <li>When we speak of a <b>model</b>, we mean a model of the environment used by the agent to infer how the environment will react to its actions (a prediction). In short: the model can be used to plan the best next action by simulating what happens next.</li>
+  <li>When there is an "external adversary" (non-stationary environments), standard single agent RL assumptions break down; you usually need a game-theoretic framing (MARL, self-play, opponent modeling...) and training becomes harder/less stable. (<i>Note</i> for me... for future projects.)</li>
+  <li>RL can be refined over time; it doesn't necessarily need to be destroyed and reconstructed from scratch each time.</li>
+  <li>The <b>training loop</b> for the agent will look something like:
+    <ul>
+      <li>the agent reads the (discretized and encoded) state of the environment</li>
+      <li>the agent chooses an action (choosing whether to explore or exploit)</li>
+      <li>the environment reacts to the action</li>
+      <li>the agent receives the reward signal and updates its values (and propagates them eventually)</li>
+      <li>the agent receives the new state of the environment and the loop starts again unless the episode cap is reached</li>
+    </ul>
+  </li>
+</ul>
+
+
+
+<p>An agent can be trained with:</p>
+<ul>
+  <li><b>on-policy</b> methods: the agent explores the environment with the same policy that is being optimized; it "estimates the value of a policy while using it for control".<br><i>eg.</i><br> the agent starts by playing randomly and eventually learns a good blackjack policy.</li>
+  <li><b>off-policy</b> methods: the agent learns from experience generated by a different (behavior) policy.<br><i>eg.</i><br> the agent tries to follow an already existing basic strategy (<i>target policy</i>) and learns around it.
+  <br>
+  <br>
+  <p><i>Off-policy</i> requires weighting rewards so experience generated by the behavior policy becomes compatible with the target policy (see <a href="https://math.arizona.edu/~tgk/mc/book_chap6.pdf" target="_blank">Importance Sampling</a>).</p>
+
+  </li>
+</ul>
+
+<br>
+<p>Gathered all this knowledge and ready to test my understanding, only one thing remained to do…</p>
+
+<blockquote>Let's code!</blockquote>
+
+<h2 id="part-1-9-the-training-blackjack-ai-trainingfield">Part 1.9 - The training (<i>BlackJack.AI.TrainingField</i>)</h2>
+
+<p>I started by recreating an efficient (and less fancy than the CLI one) game orchestrator: <code>TrainingEpisodeOrchestrator.cs</code>.</p>
+
+<p>While writing the class I figured out how to implement the <b>TrainingPlayer</b>, a special player that embodies the chosen learning algorithm:</p>
+
+<p><b><i>A Q-Learning agent with fixed ε (exploration rate) and fixed α (learning rate)</i></b>:</p>
+
+<pre><code>Q(s, a) &larr; Q(s, a) + &alpha; [r + &gamma; max_{a'} Q(s', a') - Q(s, a)]</code></pre>
+
+<p>Here <code>Q(s,a)</code> is the <b>Q-value</b>: the "quality" of doing action <code>a</code> in state <code>s</code>. In practice, it's an estimate of the expected discounted return I get if I do <code>a</code> now and then keep playing "well" after that.</p>
+
+<p>A <b>Q-table</b> is just a big lookup table that stores those values for every (state, action) pair.</p>
+
+<p>The intuition behind the update is the <b>Bellman idea</b>: "value now" is "reward now + best value later".</p>
+
+<p>The goal was to write a player that trains itself over a large number of episodes (following the <i>Bellman idea</i>) and converges to the known basic strategy tables, building a valid <i>Q-table</i> (of <i>Q-values</i>) to pass to an <code>AgentPlayer</code> for the CLI.</p>
+<br>
+<p>Early on I understood that what I was implementing wasn't the right choice for my use case: the Q-tables I obtained were simply bad, comparable to a (semi) random agent in some scenarios.</p>
+
+<p>After hours of testing different training configurations (ε, α, number of decks, episodes, game rules...), I realized my knowledge was still too superficial, so I decided to take a step back and immerse myself in the papers again.</p>
+
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>

@@ -95,6 +95,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2026-02-06",
     "updatedDate": "2026-02-10"
+  },
+  {
+    "id": "black-jack-ai-part-1",
+    "contentFile": "black-jack-ai-part-1.html",
+    "title":"BlackJack AI - Part 1",
+    "subtitle": "To succeed I had to reinforcement learn myself on machine learning concepts",
+    "abstract": "A description of how a JR-Mid .NET developer approaches the reinforcement learning for the first time with the development of a BlackJack AI. Starting from Part 0 considerations, the project evolved into a Q-Learning simulation approach leading to the first implementation of a working BlackJack AI.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2026-03-06",
+    "updatedDate": "2026-03-06"
   }
 
 ]
