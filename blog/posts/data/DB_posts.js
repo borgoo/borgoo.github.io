@@ -106,7 +106,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2026-03-06",
     "updatedDate": "2026-03-06"
+  },
+  {
+    "id": "black-jack-ai-part-2",
+    "contentFile": "black-jack-ai-part-2.html",
+    "title":"BlackJack AI - Part 2",
+    "subtitle": "Finally my BlackJack Agent can sit at the table and play in my place (almost)",
+    "abstract": "In this article we discuss why I switched from Q-Learning to Monte Carlo Reinforcement learning for my BlackJack AI, and how I implemented it.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2026-04-04",
+    "updatedDate": "2026-04-04"
   }
-
 ]
 

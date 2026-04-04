@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>BlackJack AI - Part 2 - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="BlackJack AI - Part 2 - alessandro's blog">
+  <meta name="description" content="In this article we discuss why I switched from Q-Learning to Monte Carlo Reinforcement learning for my BlackJack AI, and how I implemented it.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/black-jack-ai-part-2.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-2.html">
+  <meta property="og:title" content="BlackJack AI - Part 2 - alessandro's blog">
+  <meta property="og:description" content="In this article we discuss why I switched from Q-Learning to Monte Carlo Reinforcement learning for my BlackJack AI, and how I implemented it.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/black-jack-ai-part-2/preview.webp">
+  <meta property="article:published_time" content="2026-04-04">
+  <meta property="article:modified_time" content="2026-04-04">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/black-jack-ai-part-2.html">
+  <meta property="twitter:title" content="BlackJack AI - Part 2 - alessandro's blog">
+  <meta property="twitter:description" content="In this article we discuss why I switched from Q-Learning to Monte Carlo Reinforcement learning for my BlackJack AI, and how I implemented it.">
+  <meta property="twitter:image" content="https://borgoo.github.io/blog/posts/assets/black-jack-ai-part-2/preview.webp">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-black-jack-ai-part-2">
+      
+    <header class="post__header">
+      <h1>BlackJack AI - Part 2</h1>
+      <p class="post__subtitle">Finally my BlackJack Agent can sit at the table and play in my place (almost)</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2026-04-04">April 4, 2026 (<span class="relative-time" data-date="2026-04-04">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <p>So, as I mentioned in my <a href="black-jack-ai-part-1.html">previous article</a>, I started programming a Q-Learning agent for my BlackJack AI, but I ended up noticing the result wasn't good enough.</p>
+
+<p>I started questioning my approach and, looking for answers, I encountered the <a href="https://www.youtube.com/watch?v=7ESK5SaP-bc" target="_blank">Monte Carlo simulation</a> approach.</p>
+
+<h2 id="monte-carlo-mc-first-visit-on-policy">Monte Carlo (MC) - first visit, on-policy</h2>
+
+<p>The <a href="https://www.youtube.com/watch?v=bpUszPiWM7o&amp;t=4s" target="_blank">Monte Carlo</a> approach is a type of reinforcement learning that uses random sampling to estimate the value of an action.</p>
+
+<p>In other words, it uses:</p>
+<ul>
+  <li><b>averages</b> to approximate expected values</li>
+  <li><b>GPI</b> (Generalized Policy Iteration) to obtain an approximation of the optimal policy</li>
+</ul>
+
+<p>MC is a <b>model-free</b> method: it doesn't plan actions in advance; it just learns action-return <code>(A, S) -> R</code> associations.</p>
+
+<p>The basic idea is to simulate millions of games and use the average return to estimate the value of an action (<i>e.g.</i> whether it pays to HIT a 16 against a dealer 10).</p>
+
+<p>Monte Carlo (unlike Q-Learning) felt simpler to implement and to understand conceptually: after each hand is played randomly (not <i>really</i> random; let's say following the current policy), the return is computed and used to update the value of the action. That fits blackjack well: the player finishes their hand, then the dealer plays, and only then is the win/lose/push outcome known.</p>
+
+<h3 id="some-notations">Some notation</h3>
+
+<ul>
+  <li><code>S</code> is the state of the player and the dealer</li>
+  <li><code>A</code> is the action to take</li>
+  <li><code>G</code> is the cumulative reward (not step-by-step as in Q-Learning)</li>
+  <li><code>α</code> (alpha) is the learning rate</li>
+  <li><code>ε</code> (epsilon) is the exploration rate</li>
+  <li><code>π(S)</code> is the soft policy: the action to take in a given state <code>S</code></li>
+  <li><code>Q(S, A)</code> is the action-value function-what we want to maximize with the MC algorithm</li>
+</ul>
+
+<h2 id="the-flow-chart">The flow (chart)</h2>
+
+<p>On each episode, the cards are dealt to the player and the dealer (one face-up card for the dealer). At that point the training loop starts:</p>
+<ul>
+  <li>the player (agent) evaluates its current state: <code>(player_sum, has_soft_ace, dealer_face_up_card, can_be_splitted)</code></li>
+  <li>the player chooses an action (see <a href="#the-epsilon-greedy-strategy">exploration/exploitation strategy</a> below)</li>
+  <li>if the hand busts or the player stands, the loop ends</li>
+  <li>otherwise the loop continues with the next card or split…</li>
+</ul>
+
+<p>Once the loop ends, the dealer plays out their hand (following the game rules) and the game result is computed.</p>
+
+<p>For simplicity, imagine a <i>trajectory</i> of these events that ends in a win for the player:</p>
+<ul>
+  <li><code>Q(12, HIT)</code></li>
+  <li><code>Q(15, HIT)</code></li>
+  <li><code>Q(20, STAY)</code></li>
+</ul>
+<p>Assigning the rewards (+1 for a win in this case) in MC rests on the idea that each decision in this sequence contributed to that outcome.</p>
+
+<h3 id="the-learning-rate-alpha">The learning rate α</h3>
+
+<p>To do that, the algorithm assigns the reward <code>G = 1</code> to each state-action pair along the trajectory, weighted by a factor <code>alpha</code>. <code>α = 1 / N(S, A)</code>, where <code>N(S, A)</code> is how often that pair has been visited. Early visits get more weight; later visits are updated more gently.</p>
+
+<p>Conceptually: <i>learn fast at first, then refine more cautiously over time</i>, so that after many visits a rare <i>black swan</i> cannot yank the estimate around.</p>
+
+<pre><code>public void LearnFromEpisode(List&lt;(AgentState state, PlayerAction action, int handIndex)&gt; trajectory, GameState gameState)
+{
+    double cumulativeGforSplits = 0.0;
+    int currentHandIndex = -1;
+    int numOfVisits;
+    double alpha;
+    double[] handsReward = GetHandsReward(trajectory, gameState);
+
+    for (int i = trajectory.Count - 1; i &gt;= 0; i--) { // from last to start: compute cumulative G for splits
+
+        var (state, action, handIndex) = trajectory[i];
+
+        if (action == PlayerAction.SPLIT) {
+
+            numOfVisits = _monteCarloData.RegisterAgentStateActionVisit(state, action);
+            alpha = 1.0 / numOfVisits;
+            _monteCarloData.UpdateQTableAgentStateAction(state, action, cumulativeGforSplits, alpha);
+
+            continue;
+        }
+
+        if (handIndex != currentHandIndex) // new hand: use the correct final reward (e.g. Hand 0: H-&gt;H-&gt;H, reward = 1.0 not 3.0)
+        {
+            currentHandIndex = handIndex;
+            cumulativeGforSplits += handsReward[handIndex];
+        }
+
+        numOfVisits = _monteCarloData.RegisterAgentStateActionVisit(state, action);
+        alpha = 1.0 / numOfVisits; // 1/N(S,A)
+        _monteCarloData.UpdateQTableAgentStateAction(state, action, handsReward[handIndex], alpha);
+    }
+
+}</code></pre>
+
+<p><i>Note: the code is a little more complex than what we discussed before because it handles splits and cumulative reward per hand.</i></p>
+
+<h3 id="the-epsilon-greedy-strategy">The ε-greedy strategy</h3>
+
+<p>During training the agent picks actions with an ε-greedy rule. The greedy move is always taking the action with the highest current Q-value. The ε term injects random exploration so the agent sometimes tries other actions; without that, only the current best move would keep getting reinforced and some state-action pairs might never get a fair look.</p>
+
+<p>With probability ε the agent chooses a random legal action instead of the greedy one.</p>
+
+<pre><code>public PlayerAction ChooseAction(IReadOnlySet&lt;PlayerAction&gt; availableActions, double epsilon, AgentState currAgentState)
+{
+    _monteCarloData.RegisterAgentStateAvailableActions(currAgentState, availableActions); // QTable, NTable = default update
+
+    if (_random.NextDouble() &lt; epsilon) { // explore
+        return availableActions.ElementAt(_random.Next(availableActions.Count));
+    }
+
+    // else be greedy
+
+    PlayerAction bestAction = availableActions.ElementAt(_random.Next(availableActions.Count)); // random tie-break when Q is empty
+    double bestActionValue = _monteCarloData.GetQTableValue(currAgentState, bestAction);
+
+    foreach (PlayerAction otherAction in availableActions) {
+        if (otherAction == bestAction) continue;
+        double otherActionValue = _monteCarloData.GetQTableValue(currAgentState, otherAction);
+        if (otherActionValue &lt;= bestActionValue) continue;
+
+        bestAction = otherAction;
+        bestActionValue = otherActionValue;
+    }
+
+    return bestAction;
+}</code></pre>
+
+<p><i>Note: for better performance I decayed ε over time: a common practice so the agent explores heavily early and shifts toward exploitation as the policy stabilizes.</i></p>
+
+<h2 id="switch-to-mc-training-blackjack-ai-trainingfield">Switch to MC training (<i>BlackJack.AI.TrainingField</i>)</h2>
+
+<p>With these pieces in place I implemented MC training in the <i>BlackJack.AI.TrainingField</i> project: a new <code>TrainingPlayer</code> (Monte Carlo) class joined the solution.</p>
+
+<p>For this demo I used the following training configuration:</p>
+<pre><code>{
+    "GameConfig": {
+
+      "NumOfDecks": 6,
+      "ContinousReShufflingBetweenRounds": false,
+      "AllowSplit": true,
+      "AllowDoubleDown": true,
+      "AllowSurrender": true,
+      "DealerHitsSoft17": true,
+      "BlackJackPayout": 1.5,
+      "SurrenderCost": 0.5,
+      "ShoePenetration": 75
+    },
+
+    "NumOfEpisodes": 10000000,
+    "EpsilonStart": 1.00,
+    "EpsilonEnd": 0.001,
+    "EpsilonDecayTargetRatio": 0.95,
+    "Seed": null
+  }</code></pre>
+
+<h2 id="part-2-1-graphic-visualization-blackjack-ai-graphic">Part 2.1 - graphic visualization (<i>BlackJack.AI.Graphic</i>)</h2>
+
+<p>Remembering that the original goal was to obtain an agent that plays a solid basic strategy, I added a <b>visual renderer</b> for the Q-policy produced by MC training. It helped me see how the agent behaved, catch bugs, and compare my policies to published basic-strategy charts. <i>An example appears in the <a href="#the-benchmark-mc-agent-vs-basic-strategy">benchmark</a> section below.</i></p>
+
+<h2 id="the-benchmark-mc-agent-vs-basic-strategy">The benchmark (MC agent vs H17 basic strategy vs S17 basic strategy)</h2>
+
+<p>To evaluate how the agent performs, I compared it to standard basic-strategy tables. I loaded charts from <a href="https://www.blackjackapprenticeship.com/blackjack-strategy-charts/" target="_blank">BLACKJACK APPERTICESHIP</a> into two reference agents (<code>H17</code> and <code>S17</code>).</p>
+
+<p>I then trained my agent toward a strong policy under these rules:</p>
+<img src="assets/black-jack-ai-part-2/images/mc-agent-training-rules.webp" alt="mc agent training rules">
+
+<p>After that I ran 10,000,000 games per agent and collected win rates (house edge) against the same seed (<i><code>816878096</code></i>):</p>
+
+<h3>S17 basic strategy</h3>
+
+
+<div class="simple-slider" data-simple-slider>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <img src="assets/black-jack-ai-part-2/images/S17.webp" alt="s17 cli">
+    <ul class="simple-slider__legend">
+      <li class="simple-slider__legend-item">We can see an house edge of +0.01% appling S17 basic strategy policy.</li>
+      <li class="simple-slider__legend-item">Positive house edge means that the house has an advantage over the player in the long run.</li>
+    </ul>
+  </div>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <iframe src="assets/black-jack-ai-part-2/others/S17.pdf" width="100%" height="400"></iframe>
+    <ul class="simple-slider__legend">
+      <li class="simple-slider__legend-item">This is the S17 basic strategy table loaded into <code>--s17</code> agent.</li>
+      <li class="simple-slider__legend-item">You can find the corrispective policy <a href="assets/black-jack-ai-part-2/others/S17.csv">here</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>H17 basic strategy</h3>
+
+
+<div class="simple-slider" data-simple-slider>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <img src="assets/black-jack-ai-part-2/images/H17.webp" alt="h17 cli">
+    <ul class="simple-slider__legend">
+      <li class="simple-slider__legend-item">We can see an house edge of -0.07% appling H17 basic strategy policy.</li>
+      <li class="simple-slider__legend-item">Negative house edge means that the player has an advantage over the house in the long run.</li>
+      <li class="simple-slider__legend-item">H17 performs better stan S17 on this table rules due to its nature (dealer HITs soft 17).</li>
+    </ul>
+  </div>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <iframe src="assets/black-jack-ai-part-2/others/H17.pdf" width="100%" height="400"></iframe>
+    <ul class="simple-slider__legend">
+      <li class="simple-slider__legend-item">This is the H17 basic strategy table loaded into <code>--h17</code> agent.</li>
+      <li class="simple-slider__legend-item">You can find the corrispective policy <a href="assets/black-jack-ai-part-2/others/H17.csv">here</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>MC agent</h3>
+
+Finally we can discuss the performances of the best MC agent that I have been able to train.
+
+<div class="simple-slider" data-simple-slider>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <img src="assets/black-jack-ai-part-2/images/mc-agent.webp" alt="mc agent cli">
+    <ul class="simple-slider__legend">
+      <li class="simple-slider__legend-item">We can see an house edge of +1.95% with my policy.</li>
+      <li class="simple-slider__legend-item">The result isn't that good honestly; expecially considering the game rules. Too much edge for the house and to much distance to the suboptimal S17 policy.</li>
+      <li class="simple-slider__legend-item">See the <a href="#considerations"> considerations section</a> to know how to read the data eventually ...</li> <!--TODO-->
+    </ul>
+  </div>
+  <div class="simple-slider__slide" data-simple-slider-slide>
+    <iframe src="assets/black-jack-ai-part-2/others/QTable.html" width="100%" height="400"></iframe>
+    <ul class="simple-slider__legend">
+      <li><a href="assets/black-jack-ai-part-2/others/QTable.html" download>Download</a> MC agent QTable.html (generated via <a href="#part-2-1-graphic-visualization-blackjack-ai-graphic">this</a>. )</li>
+      <li class="simple-slider__legend-item"><a href="assets/black-jack-ai-part-2/others/Training.CLI.log">Here</a> you can find the log of the training session (see <a href="#the-benchmark-mc-agent-vs-basic-strategy">this section</a> for a quick overview).</li>
+      <li class="simple-slider__legend-item">You can find the corrispective policy <a href="assets/black-jack-ai-part-2/others/QTable.csv">here</a>.</li>
+      <li class="simple-slider__legend-item">For the more curious ones <a href="assets/black-jack-ai-part-2/others/NTable.csv">here</a> is the NTable (occurences of each state-action pair during training; used to compute the α as well).</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="considerations">Considerations</h2>
+
+<p>During the implementation, and to know what results I should expect, I used this website: <a href="https://www.beatingbonuses.com/houseedge.htm" target="_blank">BLACKJACK HOUSE EDGE CALCULATOR</a>.</p>
+<img src="assets/black-jack-ai-part-2/images/house-edge-calculator.webp" alt="house edge calculator">
+
+<p>I configured the calculator with the same game rules as my project and I got an expected value (house edge) of about <b>-0.199%</b>. That is because rules like:</p>
+<ul>
+  <li>possible infinite splits</li>
+  <li>blackjack pays 3:2</li>
+  <li>early surrender always possible</li>
+  <li>...</li>
+</ul>
+<p>are very much in the player's favor.</p>
+
+<p>We can see that H17 and S17 are pretty close to that value (not perfect, but… ok). I think some rule assumptions I made during development, plus the normal variance of the game, are part of why not even the best reference policies reach the exact expected value.</p>
+
+<p>My MC agent, on the other hand, gets a house edge of about <b>+1.95%</b> with my policy. That is a lot of edge for the house and too far from the (suboptimal)S17 policy. Still, I have some ideas about why:</p>
+<ol>
+  <li>MC is simple to understand and to implement (and it is powerful), but it is still only an approximation of the optimal policy.</li>
+  <li>The game rules assumptions I made during development affect training and results too.</li>
+  <li>If I look at <a href="assets/black-jack-ai-part-2/others/QTable.csv">QTable.csv</a> and <a href="assets/black-jack-ai-part-2/others/NTable.csv">NTable.csv</a>, visit counts are not the same for every action in a state; so some Q values may be more "trusted" than others.</li>
+  <li>Surrender often shows <code>-0.5</code> in the table because of how rewards are defined, so comparing actions is not always obvious.</li>
+</ol>
+
+<p>I cannot say my agent is perfect. Maybe I am still missing something about ML, RL, or Monte Carlo, or some refining strategy I do not know yet; but I stay open to learning more, and I would be happy to improve myself and the agent 💪.</p>
+
+<br><br>
+<p>Full project code is available <a href="https://github.com/borgoo/blackjack-ai" target="_blank">here</a>.</p>
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>
