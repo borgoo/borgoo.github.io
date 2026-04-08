@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>A Pokémon Maze - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="A Pokémon Maze - alessandro's blog">
+  <meta name="description" content="A maze puzzle game inspired by Pokémon, built with .NET and WPF. The game features a maze with various interactive elements, including icy blocks, ledges, and teleporters. Helpful to learn the basics of Breadth First Search algorithm and the Channel data structure.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/pokémon-maze.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/pokémon-maze.html">
+  <meta property="og:title" content="A Pokémon Maze - alessandro's blog">
+  <meta property="og:description" content="A maze puzzle game inspired by Pokémon, built with .NET and WPF. The game features a maze with various interactive elements, including icy blocks, ledges, and teleporters. Helpful to learn the basics of Breadth First Search algorithm and the Channel data structure.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/pokémon-maze/preview.webp">
+  <meta property="article:published_time" content="2026-04-08">
+  <meta property="article:modified_time" content="2026-04-08">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/pokémon-maze.html">
+  <meta property="twitter:title" content="A Pokémon Maze - alessandro's blog">
+  <meta property="twitter:description" content="A maze puzzle game inspired by Pokémon, built with .NET and WPF. The game features a maze with various interactive elements, including icy blocks, ledges, and teleporters. Helpful to learn the basics of Breadth First Search algorithm and the Channel data structure.">
+  <meta property="twitter:image" content="https://borgoo.github.io/blog/posts/assets/pokémon-maze/preview.webp">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-pokémon-maze">
+      
+    <header class="post__header">
+      <h1>A Pokémon Maze</h1>
+      <p class="post__subtitle">A (BFS) maze puzzle game solver (and little bit more) inspired by Pokémon</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2026-04-08">April 8, 2026 (<span class="relative-time" data-date="2026-04-08">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <p>After <a href="black-jack-ai-part-2.html">my journey into ML</a> I needed some decompression time to set up my next AI project, so I checked my TODO cauldron for inspiration and looked for deterministic projects in the queue. After a while I landed on an idea that had been waiting to be finished for quite a while.</p>
+
+<blockquote>BFS, baby!</blockquote>
+
+<h2 id="the-idea">The idea</h2>
+
+<p>Inspired by notorious competitive-programming problems, I had always wanted to create my own maze puzzle. I started working on it, and very soon I faced the uncomfortable truth that I am not that creative. My lazy side saved me again (😂): I remembered that when I was young I used to solve labyrinth-style problems in the Pokémon games on my Game Boy Color.</p>
+
+<p>That nostalgia-driven idea hyped me up, so I started looking for resources. In short, I found a reasonably large maze with some fun interactions:</p>
+
+<img src="assets/pokémon-maze/images/maze-source.webp" alt="Pokémon maze map used as reference">
+
+<p>…and a usable sprite for the pawn:</p>
+
+<img src="assets/pokémon-maze/images/sprites.webp" alt="Sprite sheet for the maze pawn" height="24">
+
+<h2 id="studying-the-maze">Studying the maze</h2>
+
+<p>I studied the maze image and reverse-engineered it. The most obvious interactions that came to mind were:</p>
+
+<ul>
+    <li><strong>Empty</strong> space lets you walk.</li>
+    <li><strong>Rocks</strong> block you like walls.</li>
+</ul>
+
+<p>Immediately, the defining feature of this maze stood out: the <strong>icy blocks</strong>. I remembered their behaviour perfectly from when I was younger: they are <b>slippery</b>. Once you step onto a frozen tile from a direction, you slide in that direction until you hit an obstacle.</p>
+
+<p>A slightly more complex rule applies to the one-way jumpable blocks (the <a href="https://bulbapedia.bulbagarden.net/wiki/Ledge" target="_blank"><strong>ledges</strong></a>): you can pass through them in only one *verse*, and the pawn lands on the adjacent tile in that direction.
+<img src="assets/pokémon-maze/images/ledge.webp" alt="Ledge example" width="150">
+</p>
+
+
+<p>Finally, I modelled <strong>ladders</strong> as teleports: entering a ladder moves the pawn to the other end (the paired ladder).</p>
+
+<p>Once those special moves were clear, I captured them in an <code>enum</code>:</p>
+
+<pre><code>public enum ObjectEnum : ushort
+{
+    Empty,
+    Wall,
+    Entrance,
+    Exit,
+    Ladder,
+    Ice,
+    JumpDown,
+    JumpLeft
+}</code></pre>
+
+<h2 id="bfs-breadth-first-search">BFS - Breadth First Search (<i>Pokémon.Maze.Core</i>)</h2>
+
+<p>Guided by TDD, I modelled edge cases for the maze:</p>
+
+<ul>
+    <li>paths that end with icy tails only</li>
+    <li>longer paths with icy tails than "plain" paths</li>
+    <li>ledges passable from one side only</li>
+    <li>ladder teleportation</li>
+    <li>and so on…</li>
+</ul>
+
+<p>Then I implemented BFS to search for the exit. As an <a href="https://adventofcode.com/" target="_blank">Advent of Code</a> veteran by now, I did not hit any major roadblocks. The approach is the classic one:</p>
+
+<ul>
+    <li>a queue holds the exploration <strong>frontier</strong> by level</li>
+    <li>the main logic decides whether a <strong>neighbour</strong> of the current node is worth exploring (or applies special actions such as <i>teleportation</i> or <i>sliding</i>)</li>
+    <li>already <strong>visited</strong> cells are skipped</li>
+    <li>the loop stops when the exit is found, or when every reachable cell has been visited, in which case I treat the maze as unsolvable and throw an exception</li>
+</ul>
+
+<p>An <i>honorable mention</i> goes to the <code>iceSlipsAlreadySeen</code> cache: a <code>Dictionary</code> that avoids redoing the same ice slide from the same direction.</p>
+
+<p>I kept refining the algorithm until it passed all the tests I had written.</p>
+
+<h2 id="from-image-to-matrix">From image to matrix</h2>
+
+<p>At that point I was ready to run my <i>Core</i> logic on the real maze, but the image is not a matrix my algorithm can traverse. I needed to encode it into a grid the code could explore.</p>
+
+<p>Thanks to <a href="https://medium.com/@mmmulani/creating-a-game-size-world-map-of-pok%C3%A9mon-fire-red-614da729476a" target="_blank">this article</a>, I learned that a tile is 16x16 pixels by convention, and the image size is a multiple of that: 640x464 px maps to a 40x29 matrix of <a href="#studying-the-maze">my enum</a> values.</p>
+    
+<p>I could have filled that matrix by hand, tile by tile…</p>
+
+<blockquote>Not in a million years!</blockquote>
+
+<p>So I wrote an automatic encoder instead.</p>
+
+<h2 id="the-matrix-from-image-generator">The matrix-from-image generator (<i>Pokémon.Maze.Matrix.Generator</i>)</h2>
+
+<p>With the <a href="https://sixlabors.com/" target="_blank">SixLabors</a> library it was straightforward (no sponsorship, just a good fit 😋) to detect walls, ice, and empty tiles in the source image.</p>
+
+<p>I split the bitmap into a grid of 16x16 cells. For each cell, I sample the central pixel (later upgraded to average RGB over the whole tile). If the mean brightness <code>(R+G+B)/3</code> is below a threshold, the cell is a <strong>wall</strong>; otherwise I compare its colour to a reference ice colour from a known tile (the first ice block from the top-left, which I point the algorithm at). If the <a href="https://en.wikipedia.org/wiki/Euclidean_distance" target="_blank">Euclidean distance</a> in RGB is within the threshold, it is <strong>ice</strong>; otherwise it is walkable <strong>empty</strong> space.</p>
+
+<p>The matrix is written to a <code>.data</code> file, and I render an overlay on top of the original image so I can visually verify how pixels were classified.</p>
+
+<p>After tuning, using <code>COLOR_THRESHOLD=167f</code> and switching to <strong>average RGB over the whole tile</strong>, I got a usable first pass:</p>
+
+<div class="simple-slider" data-simple-slider>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <img src="assets/pokémon-maze/images/matrix-on-maze-auto-gen.webp" alt="Incomplete matrix on maze image">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item"><code class="simple-slider__code" style="color: #32DC32; background-color: var(--bg-secondary);">■</code> Walkable blocks (empty)</li>
+            <li class="simple-slider__legend-item"><code class="simple-slider__code" style="color: #DC3232; background-color: var(--bg-secondary);">■</code> Walls / rocks</li>
+            <li class="simple-slider__legend-item"><code class="simple-slider__code" style="color: #50B4FF; background-color: var(--bg-secondary);">■</code> Ice</li>
+        </ul>
+    </div>
+    <div class="simple-slider__slide" data-simple-slider-slide>
+        <p>Compared to an empty matrix, that was a huge head start. Still, a few things were wrong:</p>
+        <img src="assets/pokémon-maze/images/matrix-on-maze-problems.webp" alt="Matrix on maze image with problems">
+        <ul class="simple-slider__legend">
+            <li class="simple-slider__legend-item">The ladders</li>
+            <li class="simple-slider__legend-item">The entrance and exit</li>
+            <li class="simple-slider__legend-item">The unwalkable tiles at the edge of the "mountains"</li>
+        </ul>
+        <p>In my view, those mistakes mostly come from <strong>averaging colour algorithm</strong>: edge tiles can look like empty walkable cells when only one side of the 16x16 square differs from plain floor.</p>
+    </div>
+</div>
+
+
+<h2 id="the-overlay-generator">The overlay generator (<i>Pokémon.Maze.Overlay.Generator</i>)</h2>
+
+<p>I fixed the <code>.data</code> file by hand. Rather than eyeballing every change, I refactored the code from <a href="#the-matrix-from-image-generator">the matrix generator section</a> into a dedicated tool that paints the matrix back onto the image.</p>
+
+<p>This is the result after manual corrections (<a href="assets/pokémon-maze/data/maze-grid.data" target="_blank">here</a> the matrix file), produced with <i>Pokémon.Maze.Overlay.Generator</i>:</p>
+
+<img src="assets/pokémon-maze/images/maze-grid-overlay.webp" alt="Final maze with corrected matrix overlay showing all tile types">
+
+<ul>
+    <li><code class="simple-slider__code" style="color: #32DC32;">■</code> Walkable blocks</li>
+    <li><code class="simple-slider__code" style="color: #DC3232;">■</code> Walls / rocks</li>
+    <li><code class="simple-slider__code" style="color: #50B4FF;">■</code> Ice</li>
+    <li><code class="simple-slider__code" style="color: #FFD24B;">■</code> Entrance / exit</li>
+    <li><code class="simple-slider__code" style="color: #9650DC;">■</code> Ladder</li>
+    <li><code class="simple-slider__code" style="color: #28C86E;">■</code> Ledge down</li>
+    <li><code class="simple-slider__code" style="color: #4682FF;">■</code> Ledge left</li>
+</ul>
+
+<h2 id="the-cli">The CLI (<i>Pokémon.Maze.CLI</i>)</h2>
+
+<p>Happy with the matrix, I wired it into the solver. I reused an old competitive-programming-style harness, adjusted it, and finally saw the algorithm print a real trace:</p>
+
+<style>
+.maze-trace { margin: 1em 0; }
+.maze-trace code { white-space: pre; }
+.maze-trace-ice { color: #6ec9ff; }
+.maze-trace-goal { color: #e6c200; font-weight: 600; }
+.maze-trace-ladder { color: #b565e8; }
+.maze-trace-pawn { color: #000; background-color: #aaff00; }
+</style>
+<pre class="maze-trace"><code>Step 48 <span class="maze-trace-ice">/</span> 169   (12, 27)   direction &lt;
+########################################
+########################################
+##<span class="maze-trace-ice">/////</span>#<span class="maze-trace-ice">////////</span>###                #####
+##<span class="maze-trace-ice">//////////////</span>###                # ###
+##<span class="maze-trace-ice">//////////////</span>#                  #  ##
+##<span class="maze-trace-ice">//////////</span>#<span class="maze-trace-ice">///</span>#    ############ ## <span class="maze-trace-ladder">O</span>##
+###<span class="maze-trace-ice">////////////</span>##    #<span class="maze-trace-ice">////</span>#<span class="maze-trace-ice">///</span>##      ##
+##<span class="maze-trace-ice">//////////////</span>### ##<span class="maze-trace-ice">////////</span>  #    ###
+##<span class="maze-trace-ice">//////////////</span>      #<span class="maze-trace-ice">///////</span>##########
+##<span class="maze-trace-ice">/////////</span>#<span class="maze-trace-ice">////</span>      <span class="maze-trace-ice">//</span>#<span class="maze-trace-ice">////</span>####    ###
+##<span class="maze-trace-ice">//</span>#<span class="maze-trace-ice">///////////</span>#################    ###
+##<span class="maze-trace-ice">////</span>#<span class="maze-trace-ice">////////</span>##########      #### ####
+##<span class="maze-trace-ice">//////</span>#<span class="maze-trace-ice">///////</span>####  ###  <span class="maze-trace-pawn">&lt;</span>   ###    ##
+##<span class="maze-trace-ice">//////////////</span>##     #### #  ##    <span class="maze-trace-ladder">O</span>##
+###############     #       #  #      ##
+#########    ##########  #  #  #      ##
+#####         <span class="maze-trace-ice">//</span>#    ###   ##  #<span class="maze-trace-ice">//</span>|   ##
+###           <span class="maze-trace-ice">//</span>#    ########  #<span class="maze-trace-ice">//</span>#___##
+#  #  ########<span class="maze-trace-ice">//</span>#    ##        #<span class="maze-trace-ice">//////</span>##
+#  #  #      #<span class="maze-trace-ice">//</span>#######      ###<span class="maze-trace-ice">//////</span>##
+#  #<span class="maze-trace-goal">S</span>#       #<span class="maze-trace-ice">//////</span>###      ###<span class="maze-trace-ice">//////</span>##
+#  ###       #<span class="maze-trace-ice">//////</span>##### ######<span class="maze-trace-ice">/</span>#<span class="maze-trace-ice">////</span>##
+#             ####<span class="maze-trace-ice">//</span>      #    # #   ###
+#              ###<span class="maze-trace-ice">//</span>      #    # #    ##
+#                 ####   ##     ####  ##
+#                    ######        #  ##
+#                                  #  ##
+#                                  #  ##
+####################################<span class="maze-trace-goal">E</span>###</code></pre>
+
+<h2 id="the-ui">The UI (<i>Pokémon.Maze.UI</i>)</h2>
+
+<p>The CLI output was fine for debugging, but I wanted that childish "playing on a Game Boy" feeling again.</p>
+
+<img src="assets/pokémon-maze/images/non-ce-la-faccio.webp" width="220" alt="Nostalgic reaction while building the WPF UI">
+
+<p>I spun up a WPF project. The main window stacks layers in order:</p>
+
+<ul>
+    <li>the maze bitmap as a static background</li>
+    <li>a transparent grid aligned to 16x16 cells</li>
+    <li>a canvas for styling visited vs frontier cells</li>
+    <li>the sprite on top</li>
+</ul>
+
+<p>I extended <i>Core</i> to publish <code>Snapshot</code> objects into a <code>Channel</code>; the UI subscribes, and a <code>DispatcherTimer</code> steps through them and refreshes the grid.</p>
+
+<p>Seacond <i>honorable mention</i>: a trick I kept from high school; instead of loading separate images per facing, I load one chroma-keyed sprite sheet and pick the frame inside each <code>Snapshot</code>.</p>
+
+<p>I am proud of how it turned out, here is the result:</p>
+
+<video src="assets/pokémon-maze/videos/result.mp4" width="100%" controls></video>
+
+<h2 id="some-considerations">Some considerations</h2>
+
+<p>My main takeaway is how pleasant <code>Channel</code> is for this kind of producer/consumer UI. I want to explore it more and stress-test it properly.</p>
+
+<p>The project was a fun break, and it already suggests a few improvements and spin-offs...</p>
+
+<blockquote>Stay tuned!</blockquote>
+
+<p>See you soon.</p>
+<br><br>
+<p>Full code: <a href="https://github.com/borgoo/pokemon-maze" target="_blank">here</a>.</p>
+
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>

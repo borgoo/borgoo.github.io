@@ -117,6 +117,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2026-04-04",
     "updatedDate": "2026-04-04"
+  },
+  {
+    "id": "pokémon-maze",
+    "contentFile": "pokémon-maze.html",
+    "title":"A Pokémon Maze",
+    "subtitle": "A (BFS) maze puzzle game solver (and little bit more) inspired by Pokémon",
+    "abstract": "A maze puzzle game inspired by Pokémon, built with .NET and WPF. The game features a maze with various interactive elements, including icy blocks, ledges, and teleporters. Helpful to learn the basics of Breadth First Search algorithm and the Channel data structure.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2026-04-08",
+    "updatedDate": "2026-04-08"
   }
 ]
 
