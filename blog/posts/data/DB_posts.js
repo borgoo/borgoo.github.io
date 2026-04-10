@@ -128,6 +128,17 @@
     "authorNickname": "@boborgo",
     "createdDate": "2026-04-08",
     "updatedDate": "2026-04-08"
+  },
+  {
+    "id": "rl-vs-pokémon-maze",
+    "contentFile": "rl-vs-pokémon-maze.html",
+    "title": "Q-Learning Agent vs. Pokémon Maze",
+    "subtitle": "Training a Q-learning agent on the maze: TD updates, reward shaping, and tuning",
+    "abstract": "After switching my BlackJack project to Monte Carlo, I came back to Q-learning on the same Pokémon maze I had solved with BFS. This post covers the .NET training loop (Q-table, ε-greedy...), the Q-learning update and terminal states, then the messy part: unstable behaviour, Manhattan distance to the exit, γ and timeouts, and how reward shaping plus item placement can trap the agent in a local minimum.",
+    "author": "Alessandro Borgonovo",
+    "authorNickname": "@boborgo",
+    "createdDate": "2026-04-10",
+    "updatedDate": "2026-04-10"
   }
 ]
 

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Q-Learning Agent vs. Pokémon Maze - alessandro's blog</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/images/icons/favicon.ico">
+  <meta name="title" content="Q-Learning Agent vs. Pokémon Maze - alessandro's blog">
+  <meta name="description" content="After switching my BlackJack project to Monte Carlo, I came back to Q-learning on the same Pokémon maze I had solved with BFS. This post covers the .NET training loop (Q-table, ε-greedy...), the Q-learning update and terminal states, then the messy part: unstable behaviour, Manhattan distance to the exit, γ and timeouts, and how reward shaping plus item placement can trap the agent in a local minimum.">
+  <meta name="author" content="Alessandro Borgonovo">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://borgoo.github.io/blog/posts/rl-vs-pokémon-maze.html">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://borgoo.github.io/blog/posts/rl-vs-pokémon-maze.html">
+  <meta property="og:title" content="Q-Learning Agent vs. Pokémon Maze - alessandro's blog">
+  <meta property="og:description" content="After switching my BlackJack project to Monte Carlo, I came back to Q-learning on the same Pokémon maze I had solved with BFS. This post covers the .NET training loop (Q-table, ε-greedy...), the Q-learning update and terminal states, then the messy part: unstable behaviour, Manhattan distance to the exit, γ and timeouts, and how reward shaping plus item placement can trap the agent in a local minimum.">
+  <meta property="og:site_name" content="alessandro's blog">
+  <meta property="og:image" content="https://borgoo.github.io/blog/posts/assets/rl-vs-pokémon-maze/preview.webp">
+  <meta property="article:published_time" content="2026-04-10">
+  <meta property="article:modified_time" content="2026-04-10">
+  <meta property="article:author" content="Alessandro Borgonovo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://borgoo.github.io/blog/posts/rl-vs-pokémon-maze.html">
+  <meta property="twitter:title" content="Q-Learning Agent vs. Pokémon Maze - alessandro's blog">
+  <meta property="twitter:description" content="After switching my BlackJack project to Monte Carlo, I came back to Q-learning on the same Pokémon maze I had solved with BFS. This post covers the .NET training loop (Q-table, ε-greedy...), the Q-learning update and terminal states, then the messy part: unstable behaviour, Manhattan distance to the exit, γ and timeouts, and how reward shaping plus item placement can trap the agent in a local minimum.">
+  <meta property="twitter:image" content="https://borgoo.github.io/blog/posts/assets/rl-vs-pokémon-maze/preview.webp">
+  
+  <link rel="stylesheet" href="../../assets/css/header-logo.css">
+  <link rel="stylesheet" href=".././css/blog.css">
+  <script src=".././js/theme-init.js"></script>
+
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__content">
+      <div class="header__logo-container">
+        <a href="../../index.html" class="header__logo-icon-link">
+          <img src="../../assets/images/icons/logo.webp" alt="Alessandro Borgonovo" class="header__logo-icon">
+        </a>
+        <a href=".././index.html" class="header__title">Blog</a>
+      </div>
+      <div class="header__controls">
+        <a href=".././index.html" class="go-back"> Go back</a>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-rl-vs-pokémon-maze">
+      
+    <header class="post__header">
+      <h1>Q-Learning Agent vs. Pokémon Maze</h1>
+      <p class="post__subtitle">Training a Q-learning agent on the maze: TD updates, reward shaping, and tuning</p>
+      <div class="post__meta">
+        <span class="post__meta-item">
+          <time datetime="2026-04-10">April 10, 2026 (<span class="relative-time" data-date="2026-04-10">today</span>)</time>
+        </span>
+        
+        <span class="post__meta-item">
+          <span>@boborgo</span>
+        </span>
+      </div>
+    </header>
+    <div class="post__content">
+      <p>The <a href="pokémon-maze.html" target="_blank">minor project</a> I wrapped up in the past few days was fun, but a thought about how I switched from Q-learning to a Monte Carlo approach for my <a href="black-jack-ai-part-2.html" target="_blank">ML project</a> kept nagging me. Watching what my BFS algorithm produced on the <a href="pokémon-maze.html" target="_blank">Pokémon maze project</a> gave me the idea (and the confidence) to try again with a Q-learning agent on this simple task.</p>
+
+<h2 id="the-start">The start</h2>
+
+<p>Thanks to my past experience building a <i>training field</i> for an AI agent (<a href="black-jack-ai-part-2.html" target="_blank"><i>MC Blackjack agent</i></a>), I started upgrading the <i>Core</i> section of my previous project with a few helpful classes:</p>
+
+<ul>
+  <li><i>EpisodeEngine</i> to apply and calculate the moves an agent can make from a given position in the maze</li>
+  <li><i>EpisodeState</i> to describe the current state of the running episode</li>
+  <li><i>QTable</i> to store the <code>(status, action)</code> values</li>
+</ul>
+
+<p>Keeping in mind that an <i>episode</i> is an entire <b>run</b> of a <b>pawn</b> (the character in the maze), I also wrote the initial <i>training field</i> for my agent.</p>
+
+<h2 id="the-training-setup">The training setup (<i>Pokémon.Maze.TrainingField</i>)</h2>
+
+<p>Starting from the familiar <i>ε decay</i> handling, the <i>ε-greedy policy</i>, and <i>α</i> management, I began writing code; like the MC algorithm, the initial flow looked roughly like this:</p>
+
+<ol>
+  <li>set up the initial <code>EpisodeState</code></li>
+  <li>loop (until the exit is found)</li>
+  <li>check available actions in the current state</li>
+  <li>choose an action from those</li>
+  <li>apply the action to the current state</li>
+  <li>reward the agent based on the outcome</li>
+  <li>terminate the episode when appropriate</li>
+</ol>
+
+<p>Honestly… that is pretty much it!</p>
+
+<h2 id="q-learning-training">Q-learning training</h2>
+
+<p>The elephant in the room was staring me down: what I had implemented so far mirrored my previous MC setup; it was time to move forward and implement a proper <a href="https://introml.mit.edu/notes/reinforcement_learning.html#sec-q_learning" target="_blank"><b>Q-learning algorithm</b></a>.</p>
+
+<p>Studying the formal update rule gave me everything I needed to implement it:</p>
+
+<pre><code>Q(s, a) &larr; Q(s, a) + &alpha; [r + &gamma; max_{a'} Q(s', a') - Q(s, a)]</code></pre>
+
+<ul>
+  <li><code>s</code>: the current state of the episode; in practice, how I encode the current state in my <i>QTable</i></li>
+  <li><code>a</code>: the action taken from the available ones using the ε-greedy policy</li>
+  <li><code>α</code>: constant in this case (<i>0.1</i>); the learning rate</li>
+  <li><code>r</code>: the reward for the action just taken</li>
+  <li><code>γ</code>: the discount factor; it controls how much the agent weighs immediate reward versus future reward (0: only the immediate reward; 1: future rewards count as much as the present one). From the formula it is clear how this factor weights the <b>future maximum value at the next state relative to the current estimate</b> (see <a href="#converging-to-a-stable-version" target="_blank">this section</a> for why it matters)</li>
+  <li><code>s'</code>: the state after applying <code>a</code> in <code>s</code>; the next state</li>
+  <li><code>a'</code>: the best action (highest Q-table value) among those available in <code>s'</code></li>
+</ul>
+
+<p>Here is the result (pseudo-code style) of how I translated that into code:</p>
+
+<pre><code>EpisodeState episodeState = new(_entrancePosition, _itemsPositions);
+HashSet&lt;Action&gt; availableActions = _episodeEngine.GetAvailableActions(episodeState);
+bool exitFound = false;
+
+while(true) {
+
+    QStatus s = episodeState.ToQStatus();
+    Action a = learningAgent.ChooseAction(availableActions, s, epsilon);
+
+    ApplyActionOnEpisodeState(a, episodeState);
+
+    // s'
+    QStatus nextS = episodeState.ToQStatus();
+    exitFound = episodeState.CurrentPosition == _exitPosition;
+
+    // r
+    float r = ComputeReward(s, nextS, exitFound);
+
+    // actions valid for s' -&gt; for the next loop as well
+    HashSet&lt;Action&gt; nextAvailableActions = _episodeEngine.GetAvailableActions(episodeState);
+
+    if(exitFound){
+        learningAgent.LearnFromTerminalState(s, a, r);
+        break;
+    }
+
+    learningAgent.LearnAndBootstrap(s, a, r, nextS, nextAvailableActions);
+    availableActions = nextAvailableActions;
+}</code></pre>
+
+<p><i>Note:</i> The <code>exitFound</code> flag routes learning through a terminal-state path, which deserves a closer look. Once a <i>terminal state</i> (exit reached) is found, I do not want further bootstrapping from beyond that outcome, so <code>γ</code> can be treated as 0 there. The update simplifies to:</p>
+
+<pre><code>Q(s, a) &larr; Q(s, a) + &alpha; [r - Q(s, a)]</code></pre>
+
+<p>No <code>s'</code> or <code>nextAvailableActions</code> are needed here because the key idea in RL is to assign value to the action that moves you <b>into</b> a state; I assign a large <code>r</code> (since reaching the exit happens in <code>s'</code>) to the pair <code>(s, a)</code> because it leads to the desired outcome.</p>
+
+<h2 id="an-unstable-release">An unstable release</h2>
+
+<p>The code felt promising, so I added more spice: <b>items</b> placed at strategic points in the maze, so the agent could decide whether they were worth detouring for. The items included:</p>
+
+<ul>
+  <li>a <i>Master Ball</i> (very high reward)</li>
+  <li>a <i>TM24</i> (medium reward)</li>
+  <li>a <i>Pearl</i> (low reward)</li>
+</ul>
+
+<p>Each was represented as a Poké Ball in the maze.</p>
+
+<p>I updated the grid matrix with the new value from <code>ObjectEnum</code>: <code>ObjectEnum.Item</code>, the <i>Pokémon.Maze.CLI</i>, and implemented a dedicated view for agent autoplay: <i>Pokémon.Maze.AI.UI</i> (most of the code came from the earlier <i>Pokémon.Maze.UI</i>).</p>
+
+<p>Then I launched the agent with the Q-table produced by the code so far… the result was stunning:</p>
+
+<img src="assets/rl-vs-pokémon-maze/images/loop.gif" alt="Agent stuck looping in the maze" width="200">
+
+<blockquote>"Non posso né scendere né salire… NÉ SCENDERE NÉ SALIRE!"</blockquote>
+
+<h2 id="converging-to-a-stable-version">Converging to a stable version</h2>
+
+<p>I will be honest: from here on, most of the tuning was trial and error.</p>
+
+<p>I wondered why the agent was not pulled toward the exit. After debugging the training loop, I saw that it still was not reaching the exit reliably, even accounting for random ε-greedy moves. My take is that on a maze as large as ours (40×29), many more steps than the ~170 counted by the optimal BFS path (<a href="pokémon-maze.html" target="_blank">from before</a>) may be required. Another limit was my <code>TIMEOUT_STEPS</code>: a cap on steps per training episode before forcing termination. I had added it as a safety net against infinite loops and to keep runs shorter.</p>
+
+<p>At that point I set <code>TIMEOUT_STEPS</code> to <code>int.MaxValue</code> for experimentation and kicked off a very slow training run. The result was… memorable:</p>
+
+<img src="assets/rl-vs-pokémon-maze/images/circle.gif" alt="Agent walking in a large circle" width="200">
+
+<blockquote>"Look! I've obtained a loader!"</blockquote>
+
+<p>It was clear I needed a stronger signal toward the exit. The first idea that came to mind was a <b>reward</b> based on <i>Euclidean</i> distance to the exit. Reading further convinced me that, because the pawn cannot move diagonally, <b>Manhattan distance</b> is a better fit: <code>d = |x₂ - x₁| + |y₂ - y₁|</code>.</p>
+
+<p><a href="https://gemini.google.com/app" target="_blank">Gemini</a> also suggested raising γ from 0.9 to 0.99 because the discount factor weights rewards that arrive farther in the future. With γ = 0.9, the horizon is often described as on the order of tens of steps from the current <code>s</code>; with <b>γ = 0.99</b>, that stretches toward a longer lookahead.</p>
+
+<p>After those adjustments I finally saw my first complete valid run after training on 100k episodes.</p>
+
+<img src="assets/rl-vs-pokémon-maze/images/exit.gif" alt="Agent reaching the maze exit" height="250">
+
+<h2 id="local-minimum-slippage">Local minimum (slippage)</h2>
+
+<p>Happy with the result, I started stressing the system: shrinking <code>TIMEOUT_STEPS</code> and <code>TRAINING_EPISODES_NUM</code>, refining rewards, and at one point swapping item positions (moving the <i>Master Ball</i>, the highest-reward pickup) to encourage longer but worthwhile routes. It was fascinating to watch!</p>
+
+<blockquote>It was all a bed of roses until…</blockquote>
+
+<p>Moving the high-reward item into this section</p>
+
+<img src="assets/rl-vs-pokémon-maze/images/cage.webp" alt="Maze region with the item in a tight area" width="200">
+
+<p>broke my setup. In that spot the agent slipped into a loop (a local minimum) that after heavy debugging and reading I recognized as a classic issue with <i>Manhattan</i>-based shaping.</p>
+
+<p>When the item pulls the agent there, it faces a tight spot: a cage where almost every move that escapes sideways is punished, so the agent can stay stuck. The area lies perpendicular to the exit, so moving left or right increases Manhattan distance; lateral moves earn negative reward, and with walls blocking a straight vertical path, every lateral step needed to go around is penalized and the policy can freeze.</p>
+
+<p>A well-known mitigation is a <b>negative reward for revisiting cells</b>.</p>
+
+<p>The approach I landed on looked like this:</p>
+
+<pre><code>private float ComputeReward(QStatus s, int stepCount, QStatus nextS, int nextStepCount, bool timeout, bool exitFound, BitMask visitedCells)
+{
+    // - delta steps
+    float reward = (nextStepCount - stepCount) * Rewards.StepCost;
+
+    // manhattan distance to the exit
+    int sDistanceToExit = GetManhattanDistance((s.X, s.Y), _exitPosition);
+    int nextSDistanceToExit = GetManhattanDistance((nextS.X, nextS.Y), _exitPosition);
+    int distDelta = sDistanceToExit - nextSDistanceToExit;
+    float shaping = nextSDistanceToExit &lt; sDistanceToExit
+                    ? distDelta * Rewards.CloseToExit               // + reward if closer to the exit
+                    : distDelta * (Rewards.CloseToExit * 0.2f);     // farther: smaller penalty to allow exploration
+    reward += shaping;
+
+    // discourage revisiting cells
+    if(visitedCells.IsVisited((nextS.X, nextS.Y))) reward += Rewards.RevisitingCell;
+
+    // + items rewards
+    if (s.TM24PickedUp != nextS.TM24PickedUp) reward += Rewards.TM24PickedUp;
+    if(s.MasterballPickedUp != nextS.MasterballPickedUp) reward += Rewards.MasterballPickedUp;
+    if(s.PearlPickedUp != nextS.PearlPickedUp) reward += Rewards.PearlPickedUp;
+
+    // termination rewards
+    if (timeout) reward += Rewards.Timeout;
+    if(exitFound) reward += Rewards.ExitFound;
+
+    return reward;
+}
+
+public static class Rewards
+{
+    public const float PearlPickedUp = 10;
+    public const float TM24PickedUp = 50;
+    public const float MasterballPickedUp = 300;
+    public const float Timeout = -50;
+    public const float ExitFound = 1000;
+    public const float StepCost = -1;
+    public const float CloseToExit = 0.5f;
+    public const float RevisitingCell = -0.5f;
+}</code></pre>
+
+<h2 id="a-valid-q-learning-agent">A valid Q-learning agent</h2>
+
+<p>Eventually I obtained a trained agent that finishes the maze in a reasonable number of steps. It seems to value the <i>Master Ball</i> near the exit (matching its reward) and to skip the low-value <i>Pearl</i> in the cage area (see <a href="#local-minimum-slippage" target="_blank">this section</a>). Only 50k episodes were needed (it had largely converged by ~17k).</p>
+
+<video src="assets/rl-vs-pokémon-maze/videos/4-screens.webm" width="100%" controls></video>
+
+<p>I then tried other item layouts; for example, placing the <i>Pearl</i> past the icy lake in the center of the maze, led the agent to skip it:</p>
+
+<video src="assets/rl-vs-pokémon-maze/videos/final.webm" width="100%" controls></video>
+
+<h2 id="what-ive-learned">What I've learned</h2>
+
+<p>This post is long enough, so I will keep this short.</p>
+
+<p>In my experience with projects like this, theory comes first; trial-and-error tuning follows. Solid programming matters, especially the ability to see the architecture clearly. Performance also matters: the sheer number of training iterations will punish sloppy choices, especially in a domain where theory is not always intuitive and many approaches can solve the same problem.</p>
+
+<p>If you ask me whether it was worth it: <b>absolutely</b>! watching a trained agent move on its own is hard to beat.</p>
+
+<p>One can even say that is a rewarding sensation... rewarding like...</p>
+
+<blockquote>...like a Master Ball with a 300 reward value in a maze where each step costs only −1 😉</blockquote>
+
+<br>
+<br>
+<p>Full code <a href="https://github.com/borgoo/pokemon-maze" target="_blank">here</a>.</p>
+
+    </div>
+    <div class="post__footer">
+      <a href=".././index.html" class="go-back"> Go back</a>
+    </div>
+  
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <a href="mailto:alessandro.borgonovo.info@gmail.com">Mail me</a>
+    <a href="https://github.com/borgoo" target="_blank">Github</a>
+    <a href="https://linkedin.com/in/alessandro-borgonovo-9754161b6" target="_blank">LinkedIn</a>
+    <a href="https://borgoo.github.io/" target="_blank">Website</a>
+    <a href="https://github.com/borgoo/ez-blog-2" target="_blank">&copy; 2025 EZ Blog 2.0.</a>
+  </footer>
+  
+  <script src=".././js/theme.js"></script>
+  <script src=".././js/simple-slider.js"></script>
+  <script type="module" src=".././js/post-relative-time.js"></script>
+</body>
+</html>
